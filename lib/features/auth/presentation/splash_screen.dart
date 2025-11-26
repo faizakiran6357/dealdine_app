@@ -1,64 +1,59 @@
 
-// import 'package:flutter/material.dart';
-
-// class SplashScreen extends StatefulWidget {
-//   const SplashScreen({super.key});
-
-//   @override
-//   State<SplashScreen> createState() => _SplashScreenState();
-// }
-
-// class _SplashScreenState extends State<SplashScreen> {
-
-//   @override
-//   void initState() {
-//     super.initState();
-
-//     Future.delayed(const Duration(seconds: 1), () {
-//       if (mounted) {
-//         Navigator.pushReplacementNamed(context, '/onboarding/1');
-//       }
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Center(
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             Image.asset('assets/splash1.png', width: 271.81,height: 64,),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 1), () {
-      // Replace the current route with onboarding root
-      context.go('/onboarding/1');
-    });
+  State<SplashScreen> createState() => _SplashScreenState();
+}
 
+class _SplashScreenState extends State<SplashScreen> {
+  bool showSecondSplash = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Show first splash for 1 second
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        showSecondSplash = true; // Switch to second splash
+      });
+
+      // Show second splash for 1 second
+      Future.delayed(const Duration(seconds: 3), () {
+        context.go('/onboarding/1'); // Navigate to onboarding
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset('assets/splash1.png', width: 120),
-            const SizedBox(height: 12),
-            const Text('DealDine', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-          ],
-        ),
-      ),
+      body: showSecondSplash
+          ? Container(
+              // Full screen splash 2
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                image: const DecorationImage(
+                  image: AssetImage('assets/splash2.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
+          : Center(
+              // Splash 1
+              child: Image.asset(
+                'assets/splash1.png',
+                width: 271.81,
+                height: 64,
+                fit: BoxFit.fill,
+              ),
+            ),
     );
   }
 }

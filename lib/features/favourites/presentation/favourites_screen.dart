@@ -1,30 +1,4 @@
-// import 'package:flutter/material.dart';
 
-
-// class FavouritesScreen extends StatelessWidget {
-// const FavouritesScreen({super.key});
-
-
-// @override
-// Widget build(BuildContext context) {
-// return Scaffold(
-// appBar: AppBar(title: const Text('Favourites')),
-// body: ListView.builder(
-// padding: const EdgeInsets.all(12),
-// itemCount: 6,
-// itemBuilder: (context, i) => Card(
-// child: ListTile(
-// leading: Image.asset('assets/mix.png'),
-// title: Text('Favourite ${i+1}'),
-// subtitle: const Text('Restaurant • 25–30 min'),
-// trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-// onTap: () => Navigator.pushNamed(context, '/restaurant'),
-// ),
-// ),
-// ),
-// );
-// }
-// }
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -34,19 +8,94 @@ class FavouritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Favourites')),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(12),
-        itemCount: 6,
-        itemBuilder: (context, i) => Card(
-          child: ListTile(
-            leading: Image.asset('assets/mix.png'),
-            title: Text('Favourite ${i + 1}'),
-            subtitle: const Text('Restaurant • 25–30 min'),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () => context.push('/restaurant'),
-          ),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Image.asset("assets/dine.png", width: 150),
+                Image.asset("assets/notification.png", width: 30),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // REMOVED "Favourite Restaurants | See All >" ROW
+
+            _restaurantCard(),
+            const SizedBox(height: 15),
+            _restaurantCard(),
+            const SizedBox(height: 15),
+            _restaurantCard(),
+            const SizedBox(height: 15),
+            _restaurantCard(),
+            const SizedBox(height: 30),
+          ],
         ),
+      ),
+    );
+  }
+
+  static Widget _restaurantCard() {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset("assets/resto.png", width: 65),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Panda Express",
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 3),
+                    const Text(
+                      "Coffe + Pasta Combo",
+                      style: TextStyle(color: Colors.grey,fontSize: 10),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 6),
+                    Image.asset(
+                      "assets/off.png",
+                      height: 30,
+                    ),
+                  ],
+                ),
+              ),
+              Image.asset("assets/bbb.png", width: 45),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Image.asset(
+                    "assets/aaa.png",
+                    height: 36,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Image.asset("assets/heart.png", height: 35),
+            ],
+          ),
+        ],
       ),
     );
   }
