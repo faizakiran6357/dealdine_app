@@ -1,0 +1,622 @@
+// import 'package:flutter/material.dart';
+// import 'package:go_router/go_router.dart';
+
+// class OnboardingMain extends StatefulWidget {
+//   const OnboardingMain({super.key});
+
+//   @override
+//   State<OnboardingMain> createState() => _OnboardingMainState();
+// }
+
+// class _OnboardingMainState extends State<OnboardingMain> {
+//   final PageController _pageController = PageController();
+
+//   int currentIndex = 0;
+
+//   /// -------------------- NEXT BUTTON FUNCTION --------------------
+//   void goNext(BuildContext context) {
+//     if (currentIndex == 3) {
+//       context.go('/login');
+//     } else {
+//       _pageController.nextPage(
+//         duration: const Duration(milliseconds: 300),
+//         curve: Curves.easeInOut,
+//       );
+//     }
+//   }
+
+//   /// -------------------- SWIPE END EVENT --------------------
+//   void onPageChanged(int index) {
+//     setState(() => currentIndex = index);
+
+//     if (index == 3) {
+//       // last screen
+//       // Do nothing until user swipes again
+//     }
+//   }
+
+//   /// When last page swiped again → open login
+//   void handleLastSwipe() {
+//     if (currentIndex == 3) {
+//       Future.delayed(const Duration(milliseconds: 100), () {
+//         context.go('/login');
+//       });
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       body: SafeArea(
+//         child: NotificationListener<ScrollEndNotification>(
+//           onNotification: (n) {
+//             if (currentIndex == 3 &&
+//                 _pageController.page == 3) {
+//               handleLastSwipe();
+//             }
+//             return true;
+//           },
+//           child: PageView(
+//             controller: _pageController,
+//             onPageChanged: onPageChanged,
+//             children: [
+//               buildPage(
+//                 context,
+//                 image: 'assets/onboarding1.png',
+//                 title: "All your favorites",
+//                 subtitle:
+//                     "Get all your loved foods in one once\nplace, you just place the order we do the rest",
+//                 indicator: 'assets/slide.png',
+//                 buttonAsset: 'assets/button.png',
+//               ),
+//               buildPage(
+//                 context,
+//                 image: 'assets/onboarding2.png',
+//                 title: "All your favorites",
+//                 subtitle:
+//                     "Get all your loved foods in one once\nplace, you just place the order we do the rest",
+//                 indicator: 'assets/slide1.png',
+//                 buttonAsset: 'assets/button.png',
+//               ),
+//               buildPage(
+//                 context,
+//                 image: 'assets/onboarding3.png',
+//                 title: "Order from choosen chef",
+//                 subtitle:
+//                     "Get all your loved foods in one once\nplace, you just place the order we do the rest",
+//                 indicator: 'assets/slide2.png',
+//                 buttonAsset: 'assets/button.png',
+//               ),
+//               buildPage(
+//                 context,
+//                 image: 'assets/onboarding4.png',
+//                 title: "Free delivery offers",
+//                 subtitle:
+//                     "Get all your loved foods in one once\nplace, you just place the order we do the rest",
+//                 indicator: 'assets/slide3.png',
+//                 buttonAsset: 'assets/button1.png',
+//                 isLast: true,
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+
+//   /// -------------------- PAGE WIDGET --------------------
+//   Widget buildPage(
+//     BuildContext context, {
+//     required String image,
+//     required String title,
+//     required String subtitle,
+//     required String indicator,
+//     required String buttonAsset,
+//     bool isLast = false,
+//   }) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 24.0),
+//       child: Column(
+//         children: [
+//           const SizedBox(height: 60),
+
+//           ClipRRect(
+//             borderRadius: BorderRadius.circular(12),
+//             child: Image.asset(
+//               image,
+//               width: 240,
+//               height: 292,
+//               fit: BoxFit.cover,
+//             ),
+//           ),
+
+//           const SizedBox(height: 30),
+
+//           Text(
+//             title,
+//             textAlign: TextAlign.center,
+//             style: const TextStyle(
+//               fontSize: 20,
+//               fontWeight: FontWeight.w900,
+//               color: Color(0xFF32343E),
+//             ),
+//           ),
+
+//           const SizedBox(height: 14),
+
+//           Text(
+//             subtitle,
+//             textAlign: TextAlign.center,
+//             style: const TextStyle(
+//               fontSize: 15,
+//               height: 1.5,
+//               fontWeight: FontWeight.w400,
+//               color: Color(0xFF646982),
+//             ),
+//           ),
+
+//           const SizedBox(height: 25),
+
+//           /// Indicator
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Image.asset(
+//                 indicator,
+//                 width: 76,
+//                 height: 10,
+//                 fit: BoxFit.contain,
+//               ),
+//             ],
+//           ),
+
+//           const Spacer(),
+
+//           GestureDetector(
+//             onTap: () {
+//               if (isLast) {
+//                 context.go('/login');
+//               } else {
+//                 goNext(context);
+//               }
+//             },
+//             child: Image.asset(
+//               buttonAsset,
+//               width: 330,
+//               height: 65,
+//               fit: BoxFit.contain,
+//             ),
+//           ),
+
+//           const SizedBox(height: 15),
+
+//           if (!isLast)
+//             GestureDetector(
+//               onTap: () => context.go('/login'),
+//               child: const Center(
+//                 child: Text(
+//                   "Skip",
+//                   textAlign: TextAlign.center,
+//                   style: TextStyle(
+//                     fontSize: 14,
+//                     fontWeight: FontWeight.w400,
+//                     color: Color(0xFF646982),
+//                   ),
+//                 ),
+//               ),
+//             ),
+
+//           const SizedBox(height: 30),
+//         ],
+//       ),
+//     );
+//   }
+// }
+// import 'package:dealdine_application/widgets/primary_button.dart';
+// import 'package:flutter/material.dart';
+// import 'package:go_router/go_router.dart';
+
+
+// class OnboardingMain extends StatefulWidget {
+//   const OnboardingMain({super.key});
+
+//   @override
+//   State<OnboardingMain> createState() => _OnboardingMainState();
+// }
+
+// class _OnboardingMainState extends State<OnboardingMain> {
+//   final PageController _pageController = PageController();
+//   int currentIndex = 0;
+
+//   void goNext(BuildContext context) {
+//     if (currentIndex == 3) {
+//       context.go('/login');
+//     } else {
+//       _pageController.nextPage(
+//         duration: const Duration(milliseconds: 300),
+//         curve: Curves.easeInOut,
+//       );
+//     }
+//   }
+
+//   void onPageChanged(int index) {
+//     setState(() => currentIndex = index);
+//   }
+
+//   void handleLastSwipe() {
+//     if (currentIndex == 3) {
+//       Future.delayed(const Duration(milliseconds: 100), () {
+//         context.go('/login');
+//       });
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       body: SafeArea(
+//         child: NotificationListener<ScrollEndNotification>(
+//           onNotification: (n) {
+//             if (currentIndex == 3 && _pageController.page == 3) {
+//               handleLastSwipe();
+//             }
+//             return true;
+//           },
+//           child: PageView(
+//             controller: _pageController,
+//             onPageChanged: onPageChanged,
+//             children: [
+//               buildPage(
+//                 context,
+//                 image: 'assets/onboarding1.png',
+//                 title: "All your favorites",
+//                 subtitle:
+//                     "Get all your loved foods in one once\nplace, you just place the order we do the rest",
+//                 indicator: 'assets/slide.png',
+//                 isLast: false,
+//               ),
+//               buildPage(
+//                 context,
+//                 image: 'assets/onboarding2.png',
+//                 title: "All your favorites",
+//                 subtitle:
+//                     "Get all your loved foods in one once\nplace, you just place the order we do the rest",
+//                 indicator: 'assets/slide1.png',
+//                 isLast: false,
+//               ),
+//               buildPage(
+//                 context,
+//                 image: 'assets/onboarding3.png',
+//                 title: "Order from chosen chef",
+//                 subtitle:
+//                     "Get all your loved foods in one once\nplace, you just place the order we do the rest",
+//                 indicator: 'assets/slide2.png',
+//                 isLast: false,
+//               ),
+//               buildPage(
+//                 context,
+//                 image: 'assets/onboarding4.png',
+//                 title: "Free delivery offers",
+//                 subtitle:
+//                     "Get all your loved foods in one once\nplace, you just place the order we do the rest",
+//                 indicator: 'assets/slide3.png',
+//                 isLast: true,
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+
+//   /// -------------------- PAGE UI --------------------
+//   Widget buildPage(
+//     BuildContext context, {
+//     required String image,
+//     required String title,
+//     required String subtitle,
+//     required String indicator,
+//     required bool isLast,
+//   }) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 24.0),
+//       child: Column(
+//         children: [
+//           const SizedBox(height: 80),
+
+//           ClipRRect(
+//             borderRadius: BorderRadius.circular(12),
+//             child: Image.asset(
+//               image,
+//               width: 240,
+//               height: 292,
+//               fit: BoxFit.cover,
+//             ),
+//           ),
+
+//           const SizedBox(height: 34),
+
+//           Text(
+//             title,
+//             textAlign: TextAlign.center,
+//             style: const TextStyle(
+//               fontSize: 20,
+//               fontWeight: FontWeight.w900,
+//               color: Color(0xFF32343E),
+//             ),
+//           ),
+
+//           const SizedBox(height: 14),
+
+//           Text(
+//             subtitle,
+//             textAlign: TextAlign.center,
+//             style: const TextStyle(
+//               fontSize: 15,
+//               height: 1.5,
+//               fontWeight: FontWeight.w400,
+//               color: Color(0xFF646982),
+//             ),
+//           ),
+
+//           const SizedBox(height: 25),
+
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Image.asset(
+//                 indicator,
+//                 width: 76,
+//                 height: 10,
+//                 fit: BoxFit.contain,
+//               ),
+//             ],
+//           ),
+
+//           const SizedBox(height: 60,),
+
+//           /// 🔥 PRIMARY BUTTON (Next / Get Started)
+//           PrimaryButton(
+//             text: isLast ? "Get Started" : "Next",
+//             radius: 12,
+//             padding: const EdgeInsets.symmetric(vertical: 16),
+//             onTap: () {
+//               if (isLast) {
+//                 context.go('/login');
+//               } else {
+//                 goNext(context);
+//               }
+//             },
+//           ),
+
+//           const SizedBox(height: 15),
+
+//           /// Skip button only if not last screen
+//           if (!isLast)
+//             GestureDetector(
+//               onTap: () => context.go('/login'),
+//               child: const Center(
+//                 child: Text(
+//                   "Skip",
+//                   style: TextStyle(
+//                     fontSize: 14,
+//                     fontWeight: FontWeight.w400,
+//                     color: Color(0xFF646982),
+//                   ),
+//                 ),
+//               ),
+//             ),
+
+//           const SizedBox(height: 30),
+//         ],
+//       ),
+//     );
+//   }
+// }
+import 'package:dealdine_application/widgets/primary_button.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+class OnboardingMain extends StatefulWidget {
+  const OnboardingMain({super.key});
+
+  @override
+  State<OnboardingMain> createState() => _OnboardingMainState();
+}
+
+class _OnboardingMainState extends State<OnboardingMain> {
+  final PageController _pageController = PageController();
+  int currentIndex = 0;
+
+  void goNext(BuildContext context) {
+    if (currentIndex == 3) {
+      context.go('/login');
+    } else {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void onPageChanged(int index) {
+    setState(() => currentIndex = index);
+  }
+
+  void handleLastSwipe() {
+    if (currentIndex == 3) {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        context.go('/login');
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+
+      body: SafeArea(
+        child: Stack(
+          children: [
+
+            /// ------------------------
+            /// 🔵 Only PageView moves
+            /// ------------------------
+            NotificationListener<ScrollEndNotification>(
+              onNotification: (n) {
+                if (currentIndex == 3 && _pageController.page == 3) {
+                  handleLastSwipe();
+                }
+                return true;
+              },
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: onPageChanged,
+                children: [
+                  buildPage(
+                    image: 'assets/onboarding1.png',
+                    title: "All your favorites",
+                    subtitle:
+                        "Get all your loved foods in one once\nplace, you just place the order we do the rest",
+                    indicator: 'assets/slide.png',
+                  ),
+                  buildPage(
+                    image: 'assets/onboarding2.png',
+                    title: "All your favorites",
+                    subtitle:
+                        "Get all your loved foods in one once\nplace, you just place the order we do the rest",
+                    indicator: 'assets/slide1.png',
+                  ),
+                  buildPage(
+                    image: 'assets/onboarding3.png',
+                    title: "Order from chosen chef",
+                    subtitle:
+                        "Get all your loved foods in one once\nplace, you just place the order we do the rest",
+                    indicator: 'assets/slide2.png',
+                  ),
+                  buildPage(
+                    image: 'assets/onboarding4.png',
+                    title: "Free delivery offers",
+                    subtitle:
+                        "Get all your loved foods in one once\nplace, you just place the order we do the rest",
+                    indicator: 'assets/slide3.png',
+                  ),
+                ],
+              ),
+            ),
+
+            /// --------------------------------------
+            /// 🟢 Bottom Fixed Button + Skip
+            /// (Does NOT move during swiping)
+            /// --------------------------------------
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 30,
+              child: Column(
+                children: [
+
+                  /// 🔥 PRIMARY BUTTON (Next / Get Started)
+                  PrimaryButton(
+                    text: currentIndex == 3 ? "Get Started" : "Next",
+                    radius: 12,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    onTap: () {
+                      if (currentIndex == 3) {
+                        context.go('/login');
+                      } else {
+                        goNext(context);
+                      }
+                    },
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  /// Skip only if not last
+                  if (currentIndex != 3)
+                    GestureDetector(
+                      onTap: () => context.go('/login'),
+                      child: const Text(
+                        "Skip",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF646982),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// -----------------------------------------
+  /// PAGE UI (only this part scrolls/swipes)
+  /// -----------------------------------------
+  Widget buildPage({
+    required String image,
+    required String title,
+    required String subtitle,
+    required String indicator,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        children: [
+          const SizedBox(height: 80),
+
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              image,
+              width: 240,
+              height: 292,
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          const SizedBox(height: 34),
+
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF32343E),
+            ),
+          ),
+
+          const SizedBox(height: 14),
+
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 15,
+              height: 1.5,
+              fontWeight: FontWeight.w400,
+              color: Color(0xFF646982),
+            ),
+          ),
+
+          const SizedBox(height: 25),
+
+          Image.asset(
+            indicator,
+            width: 76,
+            height: 10,
+            fit: BoxFit.contain,
+          ),
+        ],
+      ),
+    );
+  }
+}

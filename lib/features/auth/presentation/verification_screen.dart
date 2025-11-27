@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dealdine_application/widgets/primary_button.dart';
 
 class VerificationScreen extends StatelessWidget {
   const VerificationScreen({super.key});
@@ -14,7 +15,7 @@ class VerificationScreen extends StatelessWidget {
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
-            reverse: true, // Prevent keyboard overflow
+            reverse: true,
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 minHeight: constraints.maxHeight,
@@ -101,7 +102,9 @@ class VerificationScreen extends StatelessWidget {
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 30),
+                          horizontal: 24,
+                          vertical: 30,
+                        ),
                         decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.only(
@@ -142,7 +145,6 @@ class VerificationScreen extends StatelessWidget {
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.black54,
-                                        fontWeight: FontWeight.normal,
                                       ),
                                     ),
                                   ],
@@ -189,15 +191,12 @@ class VerificationScreen extends StatelessWidget {
 
                             const SizedBox(height: 40),
 
-                            // VERIFY BUTTON
-                            GestureDetector(
+                            // *************** VERIFY BUTTON (PRIMARY BUTTON) ***************
+                            PrimaryButton(
+                              text: "VERIFY",
                               onTap: () {
+                                // context.push('/newpassword');
                               },
-                              child: Image.asset(
-                                "assets/verify_button.png",
-                                width: double.infinity,
-                                fit: BoxFit.contain,
-                              ),
                             ),
                           ],
                         ),

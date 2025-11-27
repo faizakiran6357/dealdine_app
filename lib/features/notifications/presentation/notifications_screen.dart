@@ -1,4 +1,5 @@
 
+import 'package:dealdine_application/features/home/presentation/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class NotificationsScreen extends StatelessWidget {
@@ -66,18 +67,27 @@ class NotificationsScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF2F2F2),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.arrow_back_ios_new,
-                      size: 18,
-                      color: Color(0xFF1B1B1B),
-                    ),
-                  ),
+                  GestureDetector(
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
+    );
+  },
+  child: Container(
+    padding: const EdgeInsets.all(8),
+    decoration: BoxDecoration(
+      color: const Color(0xFFF2F2F2),
+      shape: BoxShape.circle,
+    ),
+    child: const Icon(
+      Icons.arrow_back_ios_new,
+      size: 18,
+      color: Color(0xFF1B1B1B),
+    ),
+  ),
+),
+
                   const SizedBox(width: 12),
                   const Text(
                     "Notifications",
@@ -140,7 +150,7 @@ class NotificationsScreen extends StatelessWidget {
                                         style: const TextStyle(
                                           fontSize: 17, // SAME SIZE
                                           fontWeight: FontWeight.w400,
-                                          color: Color(0xFF646982), // LIGHTER
+                                          color: Color(0xFF9C9BA6), // LIGHTER
                                         ),
                                       ),
                                     ],
@@ -157,7 +167,7 @@ class NotificationsScreen extends StatelessWidget {
                                       style: const TextStyle(
                                         fontSize: 13, // SAME SIZE
                                         fontWeight: FontWeight.w400,
-                                        color: Color(0xFF646982), // LIGHTER
+                                        color: Color(0xFF9C9BA6), // LIGHTER
                                       ),
                                     ),
                                   )

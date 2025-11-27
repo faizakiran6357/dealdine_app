@@ -1,6 +1,8 @@
 
+import 'package:dealdine_application/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -12,40 +14,40 @@ class LoginScreen extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0D0D25), // FULL BLACK BG (Figma)
+      backgroundColor: const Color(0xFF0D0D25),
       body: SingleChildScrollView(
         child: Column(
           children: [
-      SizedBox(
-     height: size.height * 0.32,
-    child: Padding(
-     padding: const EdgeInsets.only(top: 120), 
-     child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: const [
-        Text(
-          "Log In",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 6),
-        Text(
-          "Please sign in to your existing account",
-          style: TextStyle(
-            color: Colors.white70,
-            fontSize: 13,
-          ),
-        ),
-      ],
-    ),
-  ),
-),
+            /// ----------- TOP TITLE SECTION -----------
+            SizedBox(
+              height: size.height * 0.32,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 120),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "Log In",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                    Text(
+                      "Please sign in to your existing account",
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
-
-            /// ----------- WHITE AREA (FULL WIDTH, ONLY TOP CORNERS ROUNDED) -----------
+            /// ----------- WHITE ROUNDED AREA -----------
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 26),
@@ -59,7 +61,6 @@ class LoginScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   /// EMAIL
                   const Text(
                     "EMAIL",
@@ -158,11 +159,12 @@ class LoginScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 28),
 
-                  /// LOGIN BUTTON PNG
-                  GestureDetector(
+                  /// ---------- REUSABLE PRIMARY BUTTON ----------
+                  PrimaryButton(
+                    text: "LOG IN",
                     onTap: () => context.go('/location'),
-                    child: Center(child: Image.asset("assets/login_button.png",width:327)),
                   ),
+
                   const SizedBox(height: 30),
 
                   /// SIGN UP
@@ -191,7 +193,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 22),
 
-                  /// SOCIAL ICON PNG
+                  /// SOCIAL PNG
                   Center(
                     child: Image.asset(
                       "assets/social_icon.png",

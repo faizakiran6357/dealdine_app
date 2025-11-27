@@ -107,6 +107,8 @@ flutter:
     - assets/slide3.png
     - assets/button.png
     - assets/button1.png
+    - assets/ellipse.png
+    - assets/ellipse1.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

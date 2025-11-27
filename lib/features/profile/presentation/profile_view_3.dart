@@ -1,5 +1,6 @@
 
 import 'dart:io';
+import 'package:dealdine_application/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -228,32 +229,29 @@ class _ProfileView3State extends State<ProfileView3> {
               const SizedBox(height: 20),
 
               // Save button
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    provider.updateProfile(
-                      fullName: fullNameC.text,
-                      email: emailC.text,
-                      phone: phoneC.text,
-                      bio: bioC.text,
-                      avatarPath: profileImage?.path ?? provider.user.avatarPath,
-                    );
+               Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 22),
+  child: PrimaryButton(
+    text: "SAVE",
+    onTap: () {
+      provider.updateProfile(
+        fullName: fullNameC.text,
+        email: emailC.text,
+        phone: phoneC.text,
+        bio: bioC.text,
+        avatarPath: profileImage?.path ?? provider.user.avatarPath,
+      );
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Profile updated successfully!"),
-                      ),
-                    );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Profile updated successfully!"),
+        ),
+      );
 
-                    context.pop();
-                  },
-                  child: Image.asset(
-                    'assets/save_button.png',
-                    width: 327,
-                    height: 62,
-                  ),
-                ),
-              ),
+      context.pop();
+    },
+  ),
+),
 
               const SizedBox(height: 40),
             ],

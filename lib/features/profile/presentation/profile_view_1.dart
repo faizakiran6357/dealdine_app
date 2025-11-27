@@ -1,5 +1,6 @@
 
 import 'package:dealdine_application/application/providers/user_profile_provider.dart';
+import 'package:dealdine_application/features/notifications/presentation/notifications_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -54,7 +55,20 @@ class ProfileView1 extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Image.asset('assets/dine.png', height: 36),
-                  Image.asset('assets/notification.png', height: 32),
+
+                  // Image.asset('assets/notification.png', height: 32),
+                   // 👉 CLICKABLE NOTIFICATION ICON
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => NotificationsScreen(),
+                      ),
+                    );
+                  },
+                  child: Image.asset("assets/notification.png", width: 30),
+                ),
                 ],
               ),
               const SizedBox(height: 30),

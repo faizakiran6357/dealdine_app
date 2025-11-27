@@ -1,31 +1,54 @@
+// // // import 'package:flutter/material.dart';
+// // // import '../../../core/widgets/primary_button.dart';
+
+
+// // // class LocationScreen extends StatelessWidget {
+// // // const LocationScreen({super.key});
+
+
+// // // @override
+// // // Widget build(BuildContext context) {
+// // // return Scaffold(
+// // // appBar: AppBar(title: const Text('Select Location')),
+// // // body: Padding(
+// // // padding: const EdgeInsets.all(16.0),
+// // // child: Column(
+// // // children: [
+// // // const Text('Use your current location or search for an address.'),
+// // // const SizedBox(height: 12),
+// // // PrimaryButton(title: 'Use Current Location', onPressed: () => Navigator.pushReplacementNamed(context, '/home')),
+// // // ],
+// // // ),
+// // // ),
+// // // );
+// // // }
+// // // }
 // // import 'package:flutter/material.dart';
+// // import 'package:go_router/go_router.dart';
 // // import '../../../core/widgets/primary_button.dart';
 
-
 // // class LocationScreen extends StatelessWidget {
-// // const LocationScreen({super.key});
+// //   const LocationScreen({super.key});
 
-
-// // @override
-// // Widget build(BuildContext context) {
-// // return Scaffold(
-// // appBar: AppBar(title: const Text('Select Location')),
-// // body: Padding(
-// // padding: const EdgeInsets.all(16.0),
-// // child: Column(
-// // children: [
-// // const Text('Use your current location or search for an address.'),
-// // const SizedBox(height: 12),
-// // PrimaryButton(title: 'Use Current Location', onPressed: () => Navigator.pushReplacementNamed(context, '/home')),
-// // ],
-// // ),
-// // ),
-// // );
-// // }
+// //   @override
+// //   Widget build(BuildContext context) {
+// //     return Scaffold(
+// //       appBar: AppBar(title: const Text('Select Location')),
+// //       body: Padding(
+// //         padding: const EdgeInsets.all(16.0),
+// //         child: Column(
+// //           children: [
+// //             const Text('Use your current location or search for an address.'),
+// //             const SizedBox(height: 12),
+// //             PrimaryButton(title: 'Use Current Location', onPressed: () => context.go('/home')),
+// //           ],
+// //         ),
+// //       ),
+// //     );
+// //   }
 // // }
 // import 'package:flutter/material.dart';
 // import 'package:go_router/go_router.dart';
-// import '../../../core/widgets/primary_button.dart';
 
 // class LocationScreen extends StatelessWidget {
 //   const LocationScreen({super.key});
@@ -33,20 +56,61 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       appBar: AppBar(title: const Text('Select Location')),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
+//       backgroundColor: Colors.white, // Plain white page
+//       body: SafeArea(
 //         child: Column(
 //           children: [
-//             const Text('Use your current location or search for an address.'),
-//             const SizedBox(height: 12),
-//             PrimaryButton(title: 'Use Current Location', onPressed: () => context.go('/home')),
+//             const SizedBox(height: 114), // Top spacing
+
+//             // Centered location image
+//             Center(
+//               child: Image.asset(
+//                 'assets/location.png', // Your location asset
+//                 width: 384,
+//                 height: 353,
+//                 fit: BoxFit.fill,
+//               ),
+//             ),
+
+//             const SizedBox(height: 40), // Space before button
+
+//             // Access location button
+//             Center(
+//               child: GestureDetector(
+//                 onTap: () {
+//                   // Navigate to Home screen on click
+//                   context.go('/home'); 
+//                 },
+//                 child: Image.asset(
+//                   'assets/accesslocation_button.png', // Your button asset
+//                   width: 327, // Adjust if needed
+//                   height: 62, // Adjust if needed
+//                   fit: BoxFit.fill,
+//                 ),
+//               ),
+//             ),
+
+//             const SizedBox(height: 26), // Space before text
+
+//             // Description text
+//             Padding(
+//               padding: const EdgeInsets.symmetric(horizontal: 24.0),
+//               child: Text(
+//                 'Deal Dine WILL ACCESS YOUR LOCATION ONLY WHILE USING THE APP',
+//                 textAlign: TextAlign.center,
+//                 style: const TextStyle(
+//                   fontSize: 13,
+//                   color: Color(0xFF646982),
+//                 ),
+//               ),
+//             ),
 //           ],
 //         ),
 //       ),
 //     );
 //   }
 // }
+import 'package:dealdine_application/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -56,43 +120,40 @@ class LocationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Plain white page
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 114), // Top spacing
+            const SizedBox(height: 114),
 
-            // Centered location image
+            // Location Image
             Center(
               child: Image.asset(
-                'assets/location.png', // Your location asset
+                'assets/location.png',
                 width: 384,
                 height: 353,
                 fit: BoxFit.fill,
               ),
             ),
 
-            const SizedBox(height: 40), // Space before button
+            const SizedBox(height: 40),
 
-            // Access location button
-            Center(
-              child: GestureDetector(
+            // 🔥 Primary Button (replacing asset button)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: PrimaryButton(
+                text: "ACCESS LOCATION",
+                radius: 12,
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 onTap: () {
-                  // Navigate to Home screen on click
-                  context.go('/home'); 
+                  context.go('/home');
                 },
-                child: Image.asset(
-                  'assets/accesslocation_button.png', // Your button asset
-                  width: 327, // Adjust if needed
-                  height: 62, // Adjust if needed
-                  fit: BoxFit.fill,
-                ),
               ),
             ),
 
-            const SizedBox(height: 26), // Space before text
+            const SizedBox(height: 26),
 
-            // Description text
+            // Info text
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Text(
