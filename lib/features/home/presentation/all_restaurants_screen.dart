@@ -81,7 +81,7 @@ class AllRestaurantsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
-                        width: 252,
+                        width: 235,
                         height: 42,
                         child: PrimaryButton(
                           text: "View Deal",

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
@@ -15,7 +14,7 @@ class _VideosScreenState extends State<VideosScreen> with SingleTickerProviderSt
 
   final List<Map<String, dynamic>> videos = [
     {
-      "url": "https://www.pexels.com/download/video/4058071/",
+      "url": "https://www.pexels.com/download/video/3196175/",
       "username": "@foodlover",
       "caption": "Spicy Masala Noodles🔥",
       "tags": "#food #noodles #recipe",
@@ -24,7 +23,7 @@ class _VideosScreenState extends State<VideosScreen> with SingleTickerProviderSt
       "profile": "assets/profile2.png",
     },
     {
-      "url": "https://www.pexels.com/download/video/3298011/",
+      "url": "https://www.pexels.com/download/video/4474373/",
       "username": "@chef_Ali",
       "caption": "Sushi Plater Recipe 🍱",
       "tags": "#healthy #foodlover #sea food",
@@ -33,7 +32,7 @@ class _VideosScreenState extends State<VideosScreen> with SingleTickerProviderSt
       "profile": "assets/profile.png",
     },
     {
-      "url": "https://www.pexels.com/download/video/2961911/",
+      "url": "https://www.pexels.com/download/video/853816/",
       "username": "@foodexplorer",
       "caption": "Crispy Chicken Tikka Kabab🔥",
       "tags": "#food #chicken #recipe",
@@ -60,7 +59,7 @@ class _VideosScreenState extends State<VideosScreen> with SingleTickerProviderSt
       "profile": "assets/profile2.png",
     },
     {
-      "url": "https://www.pexels.com/download/video/7141501/",
+      "url": "https://www.pexels.com/download/video/3378581/",
       "username": "@chef_faiza",
       "caption": "Choclate Pan Cakes 🥮🍫",
       "tags": "#healthy #foodlover",
@@ -70,15 +69,13 @@ class _VideosScreenState extends State<VideosScreen> with SingleTickerProviderSt
     },
   ];
 
-  // Controllers per video
   late List<VideoPlayerController?> videoControllers;
   late List<ChewieController?> chewieControllers;
+  late List<bool> videoLoadFailed; // track which video failed to load
 
-  // Likes and user liked
   late List<int> likes;
   late List<bool> isLiked;
 
-  // Rotation controller for disc
   late AnimationController _rotationController;
 
   int currentIndex = 0;
@@ -89,6 +86,7 @@ class _VideosScreenState extends State<VideosScreen> with SingleTickerProviderSt
 
     videoControllers = List.generate(videos.length, (index) => null);
     chewieControllers = List.generate(videos.length, (index) => null);
+    videoLoadFailed = List.generate(videos.length, (index) => false);
 
     likes = videos.map((v) => v['likes'] as int).toList();
     isLiked = List.generate(videos.length, (index) => false);
@@ -98,31 +96,40 @@ class _VideosScreenState extends State<VideosScreen> with SingleTickerProviderSt
       duration: const Duration(seconds: 5),
     );
 
-    initializeVideo(0); // Initialize first video
+    initializeVideo(0);
   }
 
   Future<void> initializeVideo(int index) async {
-    if (videoControllers[index] != null) return;
+    if (videoControllers[index] != null || videoLoadFailed[index]) return;
 
-    final controller = VideoPlayerController.network(videos[index]["url"]);
-    await controller.initialize();
+    try {
+      final controller = VideoPlayerController.network(videos[index]["url"]);
+      await controller.initialize();
 
-    final chewie = ChewieController(
-      videoPlayerController: controller,
-      autoPlay: index == currentIndex,
-      looping: true,
-      showControls: false,
-    );
+      final chewie = ChewieController(
+        videoPlayerController: controller,
+        autoPlay: index == currentIndex,
+        looping: true,
+        showControls: false,
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    setState(() {
-      videoControllers[index] = controller;
-      chewieControllers[index] = chewie;
-    });
+      setState(() {
+        videoControllers[index] = controller;
+        chewieControllers[index] = chewie;
+      });
 
-    if (index == currentIndex) {
-      _rotationController.repeat();
+      if (index == currentIndex) {
+        _rotationController.repeat();
+      }
+    } catch (e) {
+      // Video failed to load → mark failed, so we don’t try again
+      setState(() {
+        videoLoadFailed[index] = true;
+      });
+      // Optionally print error to console
+      debugPrint('Error loading video at index $index: $e');
     }
   }
 
@@ -180,23 +187,31 @@ class _VideosScreenState extends State<VideosScreen> with SingleTickerProviderSt
   Widget buildVideoPage(int index) {
     final data = videos[index];
 
+    Widget videoWidget;
+    if (videoLoadFailed[index]) {
+      // If load failed, show a placeholder
+      videoWidget = const Center(
+        child: Text(
+          "Video not available",
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
+      );
+    } else if (chewieControllers[index] != null) {
+      videoWidget = Chewie(controller: chewieControllers[index]!);
+    } else {
+      videoWidget = const Center(child: CircularProgressIndicator());
+    }
+
     return Stack(
       children: [
-        // Video player
-        Positioned.fill(
-          child: chewieControllers[index] != null
-              ? Chewie(controller: chewieControllers[index]!)
-              : const Center(child: CircularProgressIndicator()),
-        ),
+        Positioned.fill(child: videoWidget),
 
-        // Top icons
         Positioned(top: 40, left: 20, child: Image.asset('assets/dine.png', height: 36)),
         Positioned(top: 40, right: 20, child: Image.asset('assets/notification.png', height: 32)),
 
-        // Right side buttons (moved closer to bottom)
         Positioned(
           right: 15,
-          bottom: 30, // was 120
+          bottom: 30,
           child: Column(
             children: [
               CircleAvatar(radius: 25, backgroundImage: AssetImage(data["profile"])),
@@ -242,31 +257,26 @@ class _VideosScreenState extends State<VideosScreen> with SingleTickerProviderSt
                 ],
               ),
               const SizedBox(height: 20),
-              // Rotating disc
-              Column(
-                children: [
-                  RotationTransition(
-                    turns: _rotationController,
-                    child: Image.asset(
-                      'assets/Disc.png',
-                      height: 36,
-                      width: 36,
-                    ),
-                  ),
-                ],
+              RotationTransition(
+                turns: _rotationController,
+                child: Image.asset(
+                  'assets/Disc.png',
+                  height: 36,
+                  width: 36,
+                ),
               ),
             ],
           ),
         ),
 
-        // Bottom left text (moved closer to bottom)
         Positioned(
           left: 20,
-          bottom: 30, // was 100
+          bottom: 30,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(data["username"], style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
+              Text(data["username"],
+                  style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
               const SizedBox(height: 5),
               Text(data["tags"], style: const TextStyle(color: Colors.white, fontSize: 14)),
               const SizedBox(height: 5),

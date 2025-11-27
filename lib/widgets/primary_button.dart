@@ -82,8 +82,8 @@ class PrimaryButton extends StatelessWidget {
     return GestureDetector(
       onTap: isLoading ? null : onTap,
       child: Container(
-        height: height ?? 58,            // default height 55 if not provided
-        width: width ?? 338, // default full width if not provided
+        height: height ?? 55,            // default height 55 if not provided
+        width: width ?? 300, // default full width if not provided
         padding: padding,                // optional custom padding
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius),

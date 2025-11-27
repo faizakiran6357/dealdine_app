@@ -766,7 +766,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 // View Deal Button
                 SizedBox(
-                  width: 252,
+                  width: 235,
                   height: 42,
                   child: PrimaryButton(
                     text: "View Deal",
