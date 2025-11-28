@@ -43,6 +43,13 @@ dependencies:
   provider: ^6.1.5+1
   carousel_slider: ^5.1.1
   lucide_icons: ^0.257.0
+  flick_video_player: ^0.9.0
+  flutter_cached_video: ^1.1.1
+  reels: ^1.0.0
+  reels_viewer: ^2.0.0
+  flutter_awesome_reels: ^0.0.5
+  flutter_cache_manager: ^3.4.1
+ 
 
 dev_dependencies:
   flutter_test:

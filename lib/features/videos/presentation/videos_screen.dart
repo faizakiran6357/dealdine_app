@@ -1,290 +1,524 @@
-import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
-import 'package:chewie/chewie.dart';
+import 'dart:async';
+import 'dart:io';
 
-class VideosScreen extends StatefulWidget {
-  const VideosScreen({super.key});
+import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:video_player/video_player.dart';
+
+class HybridReelsSafe extends StatefulWidget {
+  const HybridReelsSafe({super.key});
 
   @override
-  State<VideosScreen> createState() => _VideosScreenState();
+  State<HybridReelsSafe> createState() => _HybridReelsSafeState();
 }
 
-class _VideosScreenState extends State<VideosScreen> with SingleTickerProviderStateMixin {
-  final PageController _pageController = PageController();
+class _HybridReelsSafeState extends State<HybridReelsSafe> with AutomaticKeepAliveClientMixin {
+  final PageController _pageController = PageController(
+    viewportFraction: 1.0,
+    keepPage: true,
+  );
 
-  final List<Map<String, dynamic>> videos = [
-    {
-      "url": "https://www.pexels.com/download/video/3196175/",
-      "username": "@foodlover",
-      "caption": "Spicy Masala Noodles🔥",
-      "tags": "#food #noodles #recipe",
-      "likes": 4567,
-      "comments": 139,
-      "profile": "assets/profile2.png",
-    },
-    {
-      "url": "https://www.pexels.com/download/video/4474373/",
-      "username": "@chef_Ali",
-      "caption": "Sushi Plater Recipe 🍱",
-      "tags": "#healthy #foodlover #sea food",
-      "likes": 4251,
-      "comments": 230,
-      "profile": "assets/profile.png",
-    },
-    {
-      "url": "https://www.pexels.com/download/video/853816/",
-      "username": "@foodexplorer",
-      "caption": "Crispy Chicken Tikka Kabab🔥",
-      "tags": "#food #chicken #recipe",
-      "likes": 2112,
-      "comments": 143,
-      "profile": "assets/profile2.png",
-    },
-    {
-      "url": "https://www.pexels.com/download/video/854082/",
-      "username": "@chef_danish",
-      "caption": "Fruit Salad Recipe 🥭🍉",
-      "tags": "#healthy #foodlover",
-      "likes": 5321,
-      "comments": 211,
-      "profile": "assets/profile.png",
-    },
-    {
-      "url": "https://www.pexels.com/download/video/3196344/",
-      "username": "@streetfoodlover",
-      "caption": "Best Pizza in Town 🍕🔥",
-      "tags": "#pizza #streetfood",
-      "likes": 7891,
-      "comments": 398,
-      "profile": "assets/profile2.png",
-    },
-    {
-      "url": "https://www.pexels.com/download/video/3378581/",
-      "username": "@chef_faiza",
-      "caption": "Choclate Pan Cakes 🥮🍫",
-      "tags": "#healthy #foodlover",
-      "likes": 5325,
-      "comments": 322,
-      "profile": "assets/profile.png",
-    },
+  final DefaultCacheManager _cacheManager = DefaultCacheManager();
+
+  final List<String> _videoUrls = [
+    'https://www.pexels.com/download/video/3196175/',
+    'https://www.pexels.com/download/video/4474373/',
+    'https://www.pexels.com/download/video/853816/',
+    'https://www.pexels.com/download/video/854082/',
+    'https://www.pexels.com/download/video/2832316/',
+    'https://www.pexels.com/download/video/3378581/',
+    'https://www.pexels.com/download/video/1111421/',
+    'https://www.pexels.com/download/video/854216/',
+    'https://www.pexels.com/download/video/855128/',
   ];
 
-  late List<VideoPlayerController?> videoControllers;
-  late List<ChewieController?> chewieControllers;
-  late List<bool> videoLoadFailed; // track which video failed to load
+  static const int _preloadRange = 1;
+  static const int _keepAliveRange = 1;
 
-  late List<int> likes;
-  late List<bool> isLiked;
+  final Map<int, VideoPlayerController> _controllers = {};
+  final Map<int, bool> _loadFailed = {};
+  final Map<int, bool> _isInitializing = {};
+  final Map<int, String> _cachedFilePaths = {};
 
-  late AnimationController _rotationController;
+  late final List<int> _likes;
+  late final List<bool> _isLiked;
 
-  int currentIndex = 0;
+  bool _isDisposed = false;
+  int _currentIndex = 0;
+  int? _lastPreloadIndex;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
+    _likes = List.generate(_videoUrls.length, (i) => 1000 + i * 10);
+    _isLiked = List.generate(_videoUrls.length, (i) => false);
 
-    videoControllers = List.generate(videos.length, (index) => null);
-    chewieControllers = List.generate(videos.length, (index) => null);
-    videoLoadFailed = List.generate(videos.length, (index) => false);
+    _pageController.addListener(_handleScroll);
 
-    likes = videos.map((v) => v['likes'] as int).toList();
-    isLiked = List.generate(videos.length, (index) => false);
+    _ensureFirstVideoReady().then((_) {
+      if (!_isDisposed && mounted) setState(() {});
+    });
 
-    _rotationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 5),
-    );
-
-    initializeVideo(0);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _preloadVideosAround(0);
+    });
   }
 
-  Future<void> initializeVideo(int index) async {
-    if (videoControllers[index] != null || videoLoadFailed[index]) return;
+  void _handleScroll() {
+    final page = _pageController.hasClients ? _pageController.page : null;
+    if (page == null) return;
+    final closest = page.round();
+    if (_lastPreloadIndex == closest) return;
+    _lastPreloadIndex = closest;
+    _preloadVideosAround(closest);
+  }
+
+  Future<void> _ensureFirstVideoReady() async {
+    if (_videoUrls.isEmpty) return;
+
+    final rawUrl = _videoUrls.first;
 
     try {
-      final controller = VideoPlayerController.network(videos[index]["url"]);
-      await controller.initialize();
-
-      final chewie = ChewieController(
-        videoPlayerController: controller,
-        autoPlay: index == currentIndex,
-        looping: true,
-        showControls: false,
-      );
-
-      if (!mounted) return;
-
-      setState(() {
-        videoControllers[index] = controller;
-        chewieControllers[index] = chewie;
-      });
-
-      if (index == currentIndex) {
-        _rotationController.repeat();
+      final fileInfo = await _cacheManager.getFileFromCache(rawUrl);
+      if (fileInfo != null && fileInfo.file.existsSync()) {
+        _cachedFilePaths[0] = fileInfo.file.path;
+        await _initControllerAt(0);
+        return;
       }
-    } catch (e) {
-      // Video failed to load → mark failed, so we don’t try again
-      setState(() {
-        videoLoadFailed[index] = true;
-      });
-      // Optionally print error to console
-      debugPrint('Error loading video at index $index: $e');
+
+      final file = await _cacheManager.getSingleFile(rawUrl);
+      _cachedFilePaths[0] = file.path;
+      if (!_isDisposed) await _initControllerAt(0);
+    } catch (_) {
+      if (!_isDisposed) await _initControllerAt(0);
     }
   }
 
-  void disposeVideo(int index) {
-    videoControllers[index]?.dispose();
-    chewieControllers[index]?.dispose();
-    videoControllers[index] = null;
-    chewieControllers[index] = null;
+  Future<void> _preloadVideoFile(int index) async {
+    if (index < 0 || index >= _videoUrls.length) return;
+    if (_cachedFilePaths.containsKey(index)) return;
+
+    final rawUrl = _videoUrls[index];
+    try {
+      _cacheManager.getSingleFile(rawUrl).then((file) {
+        if (!_isDisposed && mounted) _cachedFilePaths[index] = file.path;
+      }).catchError((_) {});
+    } catch (_) {}
+  }
+
+  void _preloadVideosAround(int centerIndex) {
+    for (int offset = 0; offset <= _preloadRange; offset++) {
+      final forward = centerIndex + offset;
+      final backward = centerIndex - offset;
+
+      if (forward >= 0 && forward < _videoUrls.length) {
+        if (!_cachedFilePaths.containsKey(forward)) _preloadVideoFile(forward);
+        if (!_controllers.containsKey(forward) &&
+            !(_isInitializing[forward] ?? false) &&
+            !(_loadFailed[forward] ?? false)) {
+          _initControllerAt(forward);
+        }
+      }
+
+      if (backward >= 0 &&
+          backward < _videoUrls.length &&
+          backward != forward) {
+        if (!_cachedFilePaths.containsKey(backward)) _preloadVideoFile(backward);
+        if (!_controllers.containsKey(backward) &&
+            !(_isInitializing[backward] ?? false) &&
+            !(_loadFailed[backward] ?? false)) {
+          _initControllerAt(backward);
+        }
+      }
+    }
+  }
+
+  Future<void> _initControllerAt(int index) async {
+    if (index < 0 || index >= _videoUrls.length) return;
+    if (_controllers.containsKey(index) || (_loadFailed[index] ?? false)) return;
+    if (_isInitializing[index] ?? false) return;
+
+    _isInitializing[index] = true;
+    final rawUrl = _videoUrls[index];
+
+    try {
+      final source = await _resolveVideoSource(index, rawUrl);
+      if (_isDisposed) {
+        _isInitializing[index] = false;
+        return;
+      }
+
+      final controller = source.startsWith('http')
+          ? VideoPlayerController.networkUrl(
+              Uri.parse(source),
+              videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+            )
+          : VideoPlayerController.file(
+              File(source),
+              videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+            );
+
+      _controllers[index] = controller;
+
+      await controller.initialize();
+      controller.setLooping(true);
+      controller.setVolume(1.0);
+
+      if (index == 0 && !_isDisposed && mounted) {
+        Future.microtask(() {
+          if (_currentIndex == 0) _playAt(0);
+        });
+      }
+
+      if (mounted && !_isDisposed) {
+        Future.microtask(() => setState(() {}));
+      }
+    } catch (_) {
+      _loadFailed[index] = true;
+      final controller = _controllers.remove(index);
+      if (controller != null) {
+        try {
+          await controller.dispose();
+        } catch (_) {}
+      }
+      if (mounted && !_isDisposed) setState(() {});
+    } finally {
+      _isInitializing[index] = false;
+    }
+  }
+
+  Future<String> _resolveVideoSource(int index, String rawUrl) async {
+    if (_cachedFilePaths.containsKey(index)) {
+      return _cachedFilePaths[index]!;
+    }
+
+    try {
+      final fileInfo = await _cacheManager.getFileFromCache(rawUrl);
+      if (fileInfo != null && fileInfo.file.existsSync()) {
+        _cachedFilePaths[index] = fileInfo.file.path;
+        return fileInfo.file.path;
+      }
+    } catch (_) {}
+
+    try {
+      final file = await _cacheManager.getSingleFile(rawUrl).timeout(
+            const Duration(seconds: 4),
+            onTimeout: () => throw TimeoutException('cache timeout'),
+          );
+      _cachedFilePaths[index] = file.path;
+      return file.path;
+    } catch (_) {
+      _preloadVideoFile(index);
+      return rawUrl;
+    }
+  }
+
+  Future<void> _disposeControllerAt(int index) async {
+    final controller = _controllers.remove(index);
+    if (controller != null) {
+      try {
+        await controller.pause();
+        await controller.dispose();
+      } catch (_) {}
+    }
+  }
+
+  void _playAt(int index) {
+    final controller = _controllers[index];
+    if (controller != null && controller.value.isInitialized) {
+      controller.play();
+    }
+  }
+
+  void _pauseAt(int index) {
+    final controller = _controllers[index];
+    if (controller != null && controller.value.isInitialized) {
+      controller.pause();
+    }
+  }
+
+  void _onPageChanged(int page) {
+    if (_isDisposed || page == _currentIndex) return;
+
+    final previous = _currentIndex;
+    _currentIndex = page;
+    _pauseAt(previous);
+
+    if (_controllers.containsKey(page) && _controllers[page]!.value.isInitialized) {
+      _playAt(page);
+    } else {
+      _initControllerAt(page).then((_) {
+        if (!_isDisposed && _currentIndex == page) _playAt(page);
+      });
+    }
+
+    Future.microtask(() {
+      if (mounted) setState(() {});
+      _handlePreloadingAndCleanup(page);
+    });
+  }
+
+  void _handlePreloadingAndCleanup(int page) {
+    if (_isDisposed) return;
+
+    _preloadVideosAround(page);
+
+    final keep = <int>{};
+    for (int offset = -_keepAliveRange; offset <= _keepAliveRange; offset++) {
+      final idx = page + offset;
+      if (idx >= 0 && idx < _videoUrls.length) keep.add(idx);
+    }
+
+    final toDispose = _controllers.keys.where((idx) => !keep.contains(idx)).toList();
+    for (final idx in toDispose) {
+      _disposeControllerAt(idx);
+    }
   }
 
   @override
   void dispose() {
-    for (var i = 0; i < videos.length; i++) {
-      disposeVideo(i);
+    _isDisposed = true;
+    _pageController.removeListener(_handleScroll);
+    for (final controller in _controllers.values) {
+      try {
+        controller.pause();
+        controller.dispose();
+      } catch (_) {}
     }
-    _rotationController.dispose();
+    _controllers.clear();
+    _isInitializing.clear();
+    _cachedFilePaths.clear();
+    _pageController.dispose();
+    _cacheManager.dispose();
     super.dispose();
   }
 
-  void onPageChanged(int index) async {
-    setState(() {
-      currentIndex = index;
-    });
+  Widget _buildVideoPage(int index) {
+    final controller = _controllers[index];
+    final failed = _loadFailed[index] ?? false;
+    final isFirst = index == 0;
 
-    await initializeVideo(index);
-    if (index + 1 < videos.length) initializeVideo(index + 1);
-    if (index - 1 >= 0) initializeVideo(index - 1);
+    Widget content;
 
-    for (var i = 0; i < videos.length; i++) {
-      if ((i - index).abs() > 1) {
-        disposeVideo(i);
-      }
+    if (failed) {
+      content = const Center(
+        child: Text(
+          'Video not available',
+          style: TextStyle(color: Colors.white),
+        ),
+      );
+    } else if (controller == null || !controller.value.isInitialized) {
+      content = isFirst
+          ? const SizedBox.shrink()
+          : const Center(child: CircularProgressIndicator());
+    } else {
+      content = RepaintBoundary(
+        child: GestureDetector(
+          onTap: () {
+            if (controller.value.isPlaying) {
+              controller.pause();
+            } else {
+              controller.play();
+            }
+            setState(() {});
+          },
+          onDoubleTap: () {
+            _isLiked[index] = !_isLiked[index];
+            _likes[index] += _isLiked[index] ? 1 : -1;
+            setState(() {});
+          },
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Center(
+                  child: AspectRatio(
+                    aspectRatio: controller.value.aspectRatio,
+                    child: VideoPlayer(controller),
+                  ),
+                ),
+              ),
+              if (!controller.value.isPlaying)
+                const Center(
+                  child: Icon(Icons.play_arrow, size: 90, color: Colors.white70),
+                ),
+            ],
+          ),
+        ),
+      );
     }
 
-    chewieControllers[index]?.play();
-    _rotationController.repeat();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: PageView.builder(
-        controller: _pageController,
-        scrollDirection: Axis.vertical,
-        itemCount: videos.length,
-        onPageChanged: onPageChanged,
-        itemBuilder: (context, index) {
-          return buildVideoPage(index);
-        },
+    final rightActions = Positioned(
+      right: 12,
+      bottom: 80,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircleAvatar(radius: 22, backgroundImage: AssetImage('assets/profile.png')),
+          const SizedBox(height: 18),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _isLiked[index] = !_isLiked[index];
+                _likes[index] += _isLiked[index] ? 1 : -1;
+              });
+            },
+            child: Column(
+              children: [
+                Icon(
+                  Icons.favorite,
+                  color: _isLiked[index] ? Colors.red : Colors.white,
+                  size: 34,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '${_likes[index]}',
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 18),
+          GestureDetector(
+            onTap: () => _showComments(index),
+            child: const Column(
+              children: [
+                Icon(Icons.chat_bubble_outline, color: Colors.white, size: 34),
+                SizedBox(height: 6),
+                Text('Comments', style: TextStyle(color: Colors.white, fontSize: 10)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 18),
+          GestureDetector(
+            onTap: () => _shareVideo(index),
+            child: const Column(
+              children: [
+                Icon(Icons.share, color: Colors.white, size: 34),
+                SizedBox(height: 6),
+                Text('Share', style: TextStyle(color: Colors.white, fontSize: 10)),
+              ],
+            ),
+          ),
+        ],
       ),
+    );
+
+    final leftCaption = Positioned(
+      left: 16,
+      bottom: 24,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.62,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '@chef_${index + 1}',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Delicious recipe part ${index + 1} 🔥😋',
+              style: const TextStyle(color: Colors.white, fontSize: 14),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(color: Colors.black, child: content),
+        rightActions,
+        leftCaption,
+      ],
     );
   }
 
-  Widget buildVideoPage(int index) {
-    final data = videos[index];
-
-    Widget videoWidget;
-    if (videoLoadFailed[index]) {
-      // If load failed, show a placeholder
-      videoWidget = const Center(
-        child: Text(
-          "Video not available",
-          style: TextStyle(color: Colors.white, fontSize: 16),
-        ),
-      );
-    } else if (chewieControllers[index] != null) {
-      videoWidget = Chewie(controller: chewieControllers[index]!);
-    } else {
-      videoWidget = const Center(child: CircularProgressIndicator());
-    }
-
-    return Stack(
-      children: [
-        Positioned.fill(child: videoWidget),
-
-        Positioned(top: 40, left: 20, child: Image.asset('assets/dine.png', height: 36)),
-        Positioned(top: 40, right: 20, child: Image.asset('assets/notification.png', height: 32)),
-
-        Positioned(
-          right: 15,
-          bottom: 30,
+  void _showComments(int index) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      builder: (context) {
+        return SizedBox(
+          height: 360,
           child: Column(
             children: [
-              CircleAvatar(radius: 25, backgroundImage: AssetImage(data["profile"])),
-              const SizedBox(height: 20),
-              Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (!isLiked[index]) {
-                          likes[index] += 1;
-                          isLiked[index] = true;
-                        } else {
-                          likes[index] -= 1;
-                          isLiked[index] = false;
-                        }
-                      });
-                    },
-                    child: Icon(
-                      Icons.favorite,
-                      color: isLiked[index] ? Colors.red : Colors.white,
-                      size: 32,
+              const SizedBox(height: 12),
+              Container(height: 4, width: 48, color: Colors.grey[300]),
+              const SizedBox(height: 12),
+              const Text('Comments', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Divider(),
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(12),
+                  itemBuilder: (context, i) {
+                    return ListTile(
+                      leading: CircleAvatar(child: Text('U${i + 1}')),
+                      title: Text('User ${i + 1}'),
+                      subtitle: Text('Nice recipe! ${i + 1}'),
+                    );
+                  },
+                  separatorBuilder: (context, i) => const Divider(),
+                  itemCount: 8,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(hintText: 'Add a comment...'),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text("${likes[index]}", style: const TextStyle(color: Colors.white, fontSize: 11)),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Column(
-                children: [
-                  const Icon(Icons.chat_bubble_outline, color: Colors.white, size: 32),
-                  const SizedBox(height: 5),
-                  Text("${data['comments']}", style: const TextStyle(color: Colors.white, fontSize: 11)),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Column(
-                children: const [
-                  Icon(Icons.share, color: Colors.white, size: 32),
-                  SizedBox(height: 5),
-                  Text("Share", style: TextStyle(color: Colors.white, fontSize: 11)),
-                ],
-              ),
-              const SizedBox(height: 20),
-              RotationTransition(
-                turns: _rotationController,
-                child: Image.asset(
-                  'assets/Disc.png',
-                  height: 36,
-                  width: 36,
+                    IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: const Icon(Icons.send),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-        ),
+        );
+      },
+    );
+  }
 
-        Positioned(
-          left: 20,
-          bottom: 30,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(data["username"],
-                  style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 5),
-              Text(data["tags"], style: const TextStyle(color: Colors.white, fontSize: 14)),
-              const SizedBox(height: 5),
-              Text(data["caption"], style: const TextStyle(color: Colors.white, fontSize: 14)),
-            ],
-          ),
-        ),
-      ],
+  void _shareVideo(int index) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Share video ${index + 1}')),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: PageView.builder(
+        controller: _pageController,
+        allowImplicitScrolling: true,
+        scrollDirection: Axis.vertical,
+        itemCount: _videoUrls.length,
+        onPageChanged: _onPageChanged,
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        itemBuilder: (context, index) {
+          return RepaintBoundary(
+            key: ValueKey(index),
+            child: _buildVideoPage(index),
+          );
+        },
+      ),
     );
   }
 }
+
