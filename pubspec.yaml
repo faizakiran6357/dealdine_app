@@ -49,6 +49,7 @@ dependencies:
   reels_viewer: ^2.0.0
   flutter_awesome_reels: ^0.0.5
   flutter_cache_manager: ^3.4.1
+  fl_chart: ^1.1.1
  
 
 dev_dependencies:
@@ -116,7 +117,12 @@ flutter:
     - assets/button1.png
     - assets/ellipse.png
     - assets/ellipse1.png
-
+    - assets/active_deals.png
+    - assets/approval_rate.png
+    - assets/graph.png
+    - assets/sale.png
+    - assets/total_hotel.png
+    - assets/video_content.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

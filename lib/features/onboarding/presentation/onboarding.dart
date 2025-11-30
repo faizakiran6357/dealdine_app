@@ -631,7 +631,7 @@ class _OnboardingMainState extends State<OnboardingMain> {
 
   void goNext(BuildContext context) {
     if (currentIndex == 3) {
-      context.go('/login');
+      context.go('/role');
     } else {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -647,7 +647,7 @@ class _OnboardingMainState extends State<OnboardingMain> {
   void handleLastSwipe() {
     if (currentIndex == 3) {
       Future.delayed(const Duration(milliseconds: 100), () {
-        context.go('/login');
+        context.go('/role');
       });
     }
   }
@@ -723,7 +723,7 @@ class _OnboardingMainState extends State<OnboardingMain> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     onTap: () {
                       if (currentIndex == 3) {
-                        context.go('/login');
+                        context.go('/role');
                       } else {
                         goNext(context);
                       }
@@ -734,7 +734,7 @@ class _OnboardingMainState extends State<OnboardingMain> {
 
                   if (currentIndex != 3)
                     GestureDetector(
-                      onTap: () => context.go('/login'),
+                      onTap: () => context.go('/role'),
                       child: const Text(
                         "Skip",
                         style: TextStyle(
