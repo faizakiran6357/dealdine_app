@@ -123,6 +123,8 @@ flutter:
     - assets/sale.png
     - assets/total_hotel.png
     - assets/video_content.png
+    - assets/profile3.png
+    - assets/flag.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

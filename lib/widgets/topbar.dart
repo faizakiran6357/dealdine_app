@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 class TopBar extends StatelessWidget {
@@ -86,7 +87,7 @@ class TopBar extends StatelessWidget {
 
           const SizedBox(width: 20),
 
-          // Language Selector
+          // Language Selector (Updated: Asset Image Instead of Emoji)
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -99,14 +100,9 @@ class TopBar extends StatelessWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(2),
-                  child: const SizedBox.expand(
-                    child: FittedBox(
-                      fit: BoxFit.cover,
-                      alignment: Alignment.center,
-                      child: Text(
-                        '🇬🇧',
-                      ),
-                    ),
+                  child: Image.asset(
+                    "assets/flag.png", // 🔥 Add your flag asset here
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -135,7 +131,7 @@ class TopBar extends StatelessWidget {
             children: [
               const CircleAvatar(
                 radius: 20,
-                backgroundImage: AssetImage("assets/profile2.png"),
+                backgroundImage: AssetImage("assets/profile3.png"),
               ),
               const SizedBox(width: 12),
               Column(
