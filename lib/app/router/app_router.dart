@@ -41,6 +41,7 @@ import '../../features/admin_flow/presentation/admin_dashboard_screen.dart';
 import '../../features/admin_flow/presentation/admin_approvals_screen.dart';
 import '../../features/admin_flow/presentation/admin_analytics_screen.dart';
 import '../../features/admin_flow/presentation/admin_notifications_screen.dart';
+import 'package:dealdine_application/features/admin_flow/presentation/admin_shell.dart';
 
 /// =====================================================================
 /// 🔥 FINAL GLOBAL ROUTER
@@ -95,11 +96,32 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/restaurant/profile', builder: (c, s) => const RestaurantProfileScreen()),
 
     /// ===================================================================
-    /// ⭐ ADMIN FLOW ROUTES
+    /// ⭐ ADMIN FLOW ROUTES WITH PERSISTENT CHROME
     /// ===================================================================
-    GoRoute(path: '/admin/dashboard', builder: (c, s) => const AdminDashboardScreen()),
-    GoRoute(path: '/admin/approvals', builder: (c, s) => const AdminApprovalsScreen()),
-    GoRoute(path: '/admin/analytics', builder: (c, s) => const AdminAnalyticsScreen()),
-    GoRoute(path: '/admin/notifications', builder: (c, s) => const AdminNotificationsScreen()),
+    ShellRoute(
+      builder: (context, state, child) => AdminShell(child: child),
+      routes: [
+        GoRoute(
+          path: '/admin/dashboard',
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: AdminDashboardScreen()),
+        ),
+        GoRoute(
+          path: '/admin/approvals',
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: AdminApprovalsScreen()),
+        ),
+        GoRoute(
+          path: '/admin/analytics',
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: AdminAnalyticsScreen()),
+        ),
+        GoRoute(
+          path: '/admin/notifications',
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: AdminNotificationsScreen()),
+        ),
+      ],
+    ),
   ],
 );

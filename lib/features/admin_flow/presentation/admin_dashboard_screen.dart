@@ -24,38 +24,21 @@ class AdminDashboardScreen extends StatelessWidget {
 class _WebDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xffF3F4F8),
-      body: Row(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Sidebar(),
-          Expanded(
-            child: Column(
-              children: [
-                const TopBar(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const StatsCards(),
-                        const SizedBox(height: 20),
-                        const LineChartContainer(),
-                        const SizedBox(height: 20),
-                        Row(
-                          children: const [
-                            Expanded(child: CategoryPieChart()),
-                            SizedBox(width: 20),
-                            Expanded(child: CityPieChart()),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            ),
+          const StatsCards(),
+          const SizedBox(height: 20),
+          const LineChartContainer(),
+          const SizedBox(height: 20),
+          Row(
+            children: const [
+              Expanded(child: CategoryPieChart()),
+              SizedBox(width: 20),
+              Expanded(child: CityPieChart()),
+            ],
           )
         ],
       ),

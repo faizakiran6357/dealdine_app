@@ -22,68 +22,51 @@ class AdminNotificationsScreen extends StatelessWidget {
 class _WebNotifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FD),
-      body: Row(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Sidebar(),
-          Expanded(
-            child: Column(
-              children: [
-                const TopBar(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Notifications",
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
+          const Text(
+            "Notifications",
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 24),
 
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 10,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              _buildNotificationItemWeb(
-                                "New restaurant \"Pizza Palace\" pending approval",
-                                "2 hours ago",
-                              ),
-                              _buildNotificationItemWeb(
-                                "3 new deals waiting for review",
-                                "4 hours ago",
-                              ),
-                              _buildNotificationItemWeb(
-                                "Video from \"Burger King\" flagged by users",
-                                "1 day ago",
-                                isLast: true,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
               ],
             ),
-          )
+            child: Column(
+              children: [
+                _buildNotificationItemWeb(
+                  "New restaurant \"Pizza Palace\" pending approval",
+                  "2 hours ago",
+                ),
+                _buildNotificationItemWeb(
+                  "3 new deals waiting for review",
+                  "4 hours ago",
+                ),
+                _buildNotificationItemWeb(
+                  "Video from \"Burger King\" flagged by users",
+                  "1 day ago",
+                  isLast: true,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -107,6 +90,7 @@ class _WebNotifications extends StatelessWidget {
     );
   }
 }
+
 
 ///////////////////////////////////////////////////
 /// ----------------- TABLET LAYOUT -----------------
