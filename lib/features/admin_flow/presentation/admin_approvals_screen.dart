@@ -295,12 +295,16 @@ class _MobileApprovals extends StatelessWidget {
     return Scaffold(
       drawer: const Drawer(child: Sidebar()),
       backgroundColor: const Color(0xFFF5F7FD),
-      appBar: const AdminMobileAppBar(),
+      appBar: const AdminMobileAppBar(
+        backgroundColor: Colors.white,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const AdminMobileSearchField(),
+            const SizedBox(height: 16),
             const Text(
               "Pending Approvals",
               style: TextStyle(

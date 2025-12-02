@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:dealdine_application/widgets/primary_button.dart';
+import 'package:dealdine_application/features/auth/presentation/role_selection_screen.dart';
 
 class TopBar extends StatelessWidget {
   final bool showMenu;
@@ -229,16 +231,18 @@ class TopBar extends StatelessWidget {
 }
 
 /// ===================================================================
-/// ⭐ SHARED ADMIN MOBILE APP BAR (USED ON ALL ADMIN MOBILE SCREENS)
+///  SHARED ADMIN MOBILE APP BAR (USED ON ALL ADMIN MOBILE SCREENS)
 /// ===================================================================
 class AdminMobileAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showSettings;
+  final Color backgroundColor;
 
   const AdminMobileAppBar({
     super.key,
     this.title = '',
     this.showSettings = false,
+    this.backgroundColor = Colors.white,
   });
 
   @override
@@ -247,7 +251,7 @@ class AdminMobileAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: backgroundColor,
       elevation: 2,
       iconTheme: const IconThemeData(color: Colors.black87),
       title: title.isEmpty
@@ -287,7 +291,7 @@ class AdminMobileSettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.white70,
         elevation: 2,
         iconTheme: const IconThemeData(color: Colors.black87),
         title: const Text(
@@ -410,7 +414,49 @@ class AdminMobileSettingsScreen extends StatelessWidget {
                 ),
               ],
             ),
+            const Spacer(),
+            PrimaryButton(
+              text: 'Logout',
+              onTap: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (_) => const RoleSelectionScreen(),
+                  ),
+                  (route) => false,
+                );
+              },
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class AdminMobileSearchField extends StatelessWidget {
+  final String hint;
+  const AdminMobileSearchField({super.key, this.hint = 'Search'});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      decoration: InputDecoration(
+        hintText: hint,
+        prefixIcon: const Icon(Icons.search),
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF9C27B0)),
         ),
       ),
     );

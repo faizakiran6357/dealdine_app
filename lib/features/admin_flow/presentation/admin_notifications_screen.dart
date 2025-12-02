@@ -187,12 +187,17 @@ class _MobileNotifications extends StatelessWidget {
     return Scaffold(
       drawer: const Drawer(child: Sidebar()),
       backgroundColor: const Color(0xFFF5F7FD),
-      appBar: const AdminMobileAppBar(showSettings: true),
+      appBar: const AdminMobileAppBar(
+        showSettings: true,
+        backgroundColor: Colors.white,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const AdminMobileSearchField(),
+            const SizedBox(height: 16),
             const Text(
               "Notifications",
               style: TextStyle(

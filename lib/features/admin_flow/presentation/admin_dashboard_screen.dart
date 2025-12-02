@@ -7,6 +7,7 @@ import 'package:dealdine_application/widgets/sidebar.dart';
 import 'package:dealdine_application/widgets/stats_cards.dart';
 import 'package:dealdine_application/widgets/topbar.dart';
 import 'package:flutter/material.dart';
+
 class AdminDashboardScreen extends StatelessWidget {
   const AdminDashboardScreen({super.key});
 
@@ -78,18 +79,37 @@ class _TabletDashboard extends StatelessWidget {
   }
 }
 
-/// ----------------- MOBILE LAYOUT -----------------
+/// ----------------- MOBILE LAYOUT (UPDATED) -----------------
 class _MobileDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const Drawer(child: Sidebar()),
       backgroundColor: const Color(0xffF3F4F8),
-      appBar: const AdminMobileAppBar(),
+      appBar: const AdminMobileAppBar(
+        backgroundColor: Colors.white,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: const [
+            AdminMobileSearchField(),
+            SizedBox(height: 16),
+
+            /// 👉 Dashboard text aligned left
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Dashboard",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+
             StatsCards(),
             SizedBox(height: 20),
             LineChartContainer(),

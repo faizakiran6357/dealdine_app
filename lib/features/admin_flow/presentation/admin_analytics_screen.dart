@@ -257,12 +257,16 @@ class _MobileAnalytics extends StatelessWidget {
     return Scaffold(
       drawer: const Drawer(child: Sidebar()),
       backgroundColor: const Color(0xffF3F4F8),
-      appBar: const AdminMobileAppBar(),
+      appBar: const AdminMobileAppBar(
+        backgroundColor: Colors.white,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const AdminMobileSearchField(),
+            const SizedBox(height: 16),
             const Text(
               "Restaurant Analytics",
               style: TextStyle(
