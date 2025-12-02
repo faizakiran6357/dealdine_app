@@ -125,6 +125,8 @@ flutter:
     - assets/video_content.png
     - assets/profile3.png
     - assets/flag.png
+    - assets/categories.png
+    - assets/cities.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
