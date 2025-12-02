@@ -257,109 +257,103 @@ class _MobileAnalytics extends StatelessWidget {
     return Scaffold(
       drawer: const Drawer(child: Sidebar()),
       backgroundColor: const Color(0xffF3F4F8),
-      body: Column(
-        children: [
-          const TopBar(showMenu: true),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Restaurant Analytics",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+      appBar: const AdminMobileAppBar(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Restaurant Analytics",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
 
-                  /* ---------------------------
-                      MOBILE TABLE (HORIZONTAL)
-                  ---------------------------- */
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 8,
-                          offset: Offset(0, 3),
+            /* ---------------------------
+                MOBILE TABLE (HORIZONTAL)
+            ---------------------------- */
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 8,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Container(
+                  width: 880,
+                  child: Column(
+                    children: [
+                      /* ---------- TABLE HEADER ---------- */
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: const BoxDecoration(
+                          color: Color(0xffE8F0FE),
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(16),
+                          ),
                         ),
-                      ],
-                    ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        width: 880,
-                        child: Column(
+                        child: const Row(
                           children: [
-                            /* ---------- TABLE HEADER ---------- */
-                            Container(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              decoration: const BoxDecoration(
-                                color: Color(0xffE8F0FE),
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(16),
-                                ),
-                              ),
-                              child: const Row(
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 10),
-                                      child: Text("RESTAURANT", style: _headerStyle),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text("TOTAL VIEWS",
-                                        textAlign: TextAlign.center,
-                                        style: _headerStyle),
-                                  ),
-                                  Expanded(
-                                    child: Text("ACTIVE DEALS",
-                                        textAlign: TextAlign.center,
-                                        style: _headerStyle),
-                                  ),
-                                  Expanded(
-                                    child: Text("RATING",
-                                        textAlign: TextAlign.center,
-                                        style: _headerStyle),
-                                  ),
-                                  Expanded(
-                                    child: Text("REVENUE",
-                                        textAlign: TextAlign.center,
-                                        style: _headerStyle),
-                                  ),
-                                  Expanded(
-                                    child: Text("GROWTH",
-                                        textAlign: TextAlign.center,
-                                        style: _headerStyle),
-                                  ),
-                                ],
+                            Expanded(
+                              flex: 2,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Text("RESTAURANT", style: _headerStyle),
                               ),
                             ),
-
-                            /* ---------- MOBILE TABLE ROWS ---------- */
-                            Column(
-                              children: List.generate(
-                                8,
-                                (index) => _buildMobileAnalyticsTableRow(),
-                              ),
+                            Expanded(
+                              child: Text("TOTAL VIEWS",
+                                  textAlign: TextAlign.center,
+                                  style: _headerStyle),
+                            ),
+                            Expanded(
+                              child: Text("ACTIVE DEALS",
+                                  textAlign: TextAlign.center,
+                                  style: _headerStyle),
+                            ),
+                            Expanded(
+                              child: Text("RATING",
+                                  textAlign: TextAlign.center,
+                                  style: _headerStyle),
+                            ),
+                            Expanded(
+                              child: Text("REVENUE",
+                                  textAlign: TextAlign.center,
+                                  style: _headerStyle),
+                            ),
+                            Expanded(
+                              child: Text("GROWTH",
+                                  textAlign: TextAlign.center,
+                                  style: _headerStyle),
                             ),
                           ],
                         ),
                       ),
-                    ),
+
+                      /* ---------- MOBILE TABLE ROWS ---------- */
+                      Column(
+                        children: List.generate(
+                          8,
+                          (index) => _buildMobileAnalyticsTableRow(),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -85,26 +85,20 @@ class _MobileDashboard extends StatelessWidget {
     return Scaffold(
       drawer: const Drawer(child: Sidebar()),
       backgroundColor: const Color(0xffF3F4F8),
-      body: Column(
-        children: [
-          const TopBar(showMenu: true),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: const [
-                  StatsCards(),
-                  SizedBox(height: 20),
-                  LineChartContainer(),
-                  SizedBox(height: 20),
-                  CategoryPieChart(),
-                  SizedBox(height: 20),
-                  CityPieChart(),
-                ],
-              ),
-            ),
-          )
-        ],
+      appBar: const AdminMobileAppBar(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: const [
+            StatsCards(),
+            SizedBox(height: 20),
+            LineChartContainer(),
+            SizedBox(height: 20),
+            CategoryPieChart(),
+            SizedBox(height: 20),
+            CityPieChart(),
+          ],
+        ),
       ),
     );
   }

@@ -187,60 +187,54 @@ class _MobileNotifications extends StatelessWidget {
     return Scaffold(
       drawer: const Drawer(child: Sidebar()),
       backgroundColor: const Color(0xFFF5F7FD),
-      body: Column(
-        children: [
-          const TopBar(showMenu: true),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Notifications",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+      appBar: const AdminMobileAppBar(showSettings: true),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Notifications",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 20),
 
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 10,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        _buildNotificationItemMobile(
-                          "New restaurant \"Pizza Palace\" pending approval",
-                          "2 hours ago",
-                        ),
-                        _buildNotificationItemMobile(
-                          "3 new deals waiting for review",
-                          "4 hours ago",
-                        ),
-                        _buildNotificationItemMobile(
-                          "Video from \"Burger King\" flagged by users",
-                          "1 day ago",
-                          isLast: true,
-                        ),
-                      ],
-                    ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  _buildNotificationItemMobile(
+                    "New restaurant \"Pizza Palace\" pending approval",
+                    "2 hours ago",
+                  ),
+                  _buildNotificationItemMobile(
+                    "3 new deals waiting for review",
+                    "4 hours ago",
+                  ),
+                  _buildNotificationItemMobile(
+                    "Video from \"Burger King\" flagged by users",
+                    "1 day ago",
+                    isLast: true,
                   ),
                 ],
               ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }

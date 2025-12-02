@@ -295,129 +295,120 @@ class _MobileApprovals extends StatelessWidget {
     return Scaffold(
       drawer: const Drawer(child: Sidebar()),
       backgroundColor: const Color(0xFFF5F7FD),
-      body: Column(
-        children: [
-          const TopBar(showMenu: true),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
+      appBar: const AdminMobileAppBar(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Pending Approvals",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // MOBILE TABLE (Horizontal Scroll)
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Pending Approvals",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                  // HEADER
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 12),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFE3EEFF),
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(20)),
+                      ),
+                      child: Row(
+                        children: const [
+                          _MobileHeaderCell("NAME", width: 130),
+                          _MobileHeaderCell("TYPE", width: 90),
+                          _MobileHeaderCell("SUBMITTED", width: 130),
+                          _MobileHeaderCell("DETAILS", width: 120),
+                          _MobileHeaderCell("ACTIONS", width: 180),
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 20),
 
-                  // MOBILE TABLE (Horizontal Scroll)
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.06),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        // HEADER
-                        SingleChildScrollView(
+                  // ROWS
+                  SizedBox(
+                    height: 500,
+                    child: ListView.builder(
+                      itemCount: 8,
+                      itemBuilder: (context, index) {
+                        return SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                vertical: 16, horizontal: 12),
-                            decoration: const BoxDecoration(
-                              color: Color(0xFFE3EEFF),
-                              borderRadius:
-                                  BorderRadius.vertical(top: Radius.circular(20)),
+                                vertical: 18, horizontal: 12),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.grey.shade200),
+                              ),
                             ),
                             child: Row(
-                              children: const [
-                                _MobileHeaderCell("NAME", width: 130),
-                                _MobileHeaderCell("TYPE", width: 90),
-                                _MobileHeaderCell("SUBMITTED", width: 130),
-                                _MobileHeaderCell("DETAILS", width: 120),
-                                _MobileHeaderCell("ACTIONS", width: 180),
-                              ],
-                            ),
-                          ),
-                        ),
+                              children: [
+                                _MobileRowCell("Pizza Palace", width: 130),
+                                _MobileRowCell("Restaurant", width: 90),
+                                _MobileRowCell("2024-01-15", width: 130),
+                                _MobileRowCell("Fast Food", width: 120),
 
-                        // ROWS
-                        SizedBox(
-                          height: 500,
-                          child: ListView.builder(
-                            itemCount: 8,
-                            itemBuilder: (context, index) {
-                              return SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 18, horizontal: 12),
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                          color: Colors.grey.shade200),
-                                    ),
-                                  ),
-                                  child: Row(
+                                //
+                                // ****** FIXED ACTIONS (NO OVERFLOW) ******
+                                //
+                                SizedBox(
+                                  width: 180,
+                                  child: Wrap(
+                                    spacing: 8,
+                                    runSpacing: 6,
                                     children: [
-                                      _MobileRowCell("Pizza Palace",
-                                          width: 130),
-                                      _MobileRowCell("Restaurant", width: 90),
-                                      _MobileRowCell("2024-01-15",
-                                          width: 130),
-                                      _MobileRowCell("Fast Food",
-                                          width: 120),
-
-                                      //
-                                      // ****** FIXED ACTIONS (NO OVERFLOW) ******
-                                      //
-                                      SizedBox(
-                                        width: 180,
-                                        child: Wrap(
-                                          spacing: 8,
-                                          runSpacing: 6,
-                                          children: [
-                                            _ActionButton(
-                                              icon: Icons.check_circle,
-                                              label: "Approve",
-                                              color: Colors.teal,
-                                              onPressed: () {},
-                                            ),
-                                            _ActionButton(
-                                              icon: Icons.cancel,
-                                              label: "Reject",
-                                              color: Colors.red,
-                                              onPressed: () {},
-                                            ),
-                                          ],
-                                        ),
+                                      _ActionButton(
+                                        icon: Icons.check_circle,
+                                        label: "Approve",
+                                        color: Colors.teal,
+                                        onPressed: () {},
+                                      ),
+                                      _ActionButton(
+                                        icon: Icons.cancel,
+                                        label: "Reject",
+                                        color: Colors.red,
+                                        onPressed: () {},
                                       ),
                                     ],
                                   ),
                                 ),
-                              );
-                            },
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
                   ),
                 ],
               ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
