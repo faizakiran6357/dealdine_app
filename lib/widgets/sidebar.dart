@@ -7,11 +7,14 @@ class Sidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.of(context).size.width < 600;
+    final double sidebarWidth = isMobile ? 140 : 230;
+
     // Get current route location
     final String currentLocation = GoRouterState.of(context).uri.path;
     
     return Container(
-      width: 230,
+      width: sidebarWidth,
       color: Colors.white,
       child: Column(
         children: [
@@ -26,8 +29,8 @@ class Sidebar extends StatelessWidget {
             "Dashboard",
             '/admin/dashboard',
             selected: currentLocation == '/admin/dashboard',
-            leftMargin: 15,     // 👈 Left side space
-            rightMargin: 15,    // 👈 Right side space
+            leftMargin: 15,     //  Left side space
+            rightMargin: 15,    //  Right side space
           ),
 
           // ⭐ Other items untouched
@@ -37,6 +40,8 @@ class Sidebar extends StatelessWidget {
             "Approvals",
             '/admin/approvals',
             selected: currentLocation == '/admin/approvals',
+            leftMargin: 15,     
+            rightMargin: 15,    
           ),
           _menuItem(
             context,
@@ -44,6 +49,8 @@ class Sidebar extends StatelessWidget {
             "Analytics",
             '/admin/analytics',
             selected: currentLocation == '/admin/analytics',
+            leftMargin: 15,     
+            rightMargin: 15,    
           ),
           _menuItem(
             context,
@@ -51,6 +58,8 @@ class Sidebar extends StatelessWidget {
             "Notifications",
             '/admin/notifications',
             selected: currentLocation == '/admin/notifications',
+            leftMargin: 15,     
+            rightMargin: 15,    
           ),
 
           const Spacer(),
