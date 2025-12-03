@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:video_player/video_player.dart';
 
-class HybridReelsSafe extends StatefulWidget {
-  const HybridReelsSafe({super.key});
+class VideosScreen extends StatefulWidget {
+  const VideosScreen({super.key});
 
   @override
-  State<HybridReelsSafe> createState() => _HybridReelsSafeState();
+  State<VideosScreen> createState() => _HybridReelsSafeState();
 }
 
-class _HybridReelsSafeState extends State<HybridReelsSafe> with AutomaticKeepAliveClientMixin {
+class _HybridReelsSafeState extends State<VideosScreen> with AutomaticKeepAliveClientMixin {
   final PageController _pageController = PageController(
     viewportFraction: 1.0,
     keepPage: true,
