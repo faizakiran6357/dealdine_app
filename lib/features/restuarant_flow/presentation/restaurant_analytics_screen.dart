@@ -1842,7 +1842,7 @@ class RestaurantAnalyticsScreen extends StatelessWidget {
     final bool isMobile = !isWeb && !isTablet;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFDEDECC),
+      backgroundColor: const Color(0xFFdee2e6),
 
       // --------------------------
       // MOBILE APPBAR + DRAWER
@@ -1893,7 +1893,7 @@ class RestaurantAnalyticsScreen extends StatelessWidget {
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 1200),
                       child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -1996,7 +1996,7 @@ class RestaurantAnalyticsScreen extends StatelessWidget {
         final double fontSize = mobile ? 10 : 13;
 
         final double pizzaOffset = mobile ? 0.49 : 0.42;
-        final double appetizerOffset = mobile ? 0.49 : 0.49;
+        final double appetizerOffset = mobile ? 0.51 : 0.49;
         final double pastaOffset = mobile ? 0.49 : 0.40;
         final double dessertOffset = mobile ? 0.49 : 0.43;
 

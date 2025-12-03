@@ -2612,7 +2612,7 @@ class RestaurantDashboardScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFDEDECC),
+      backgroundColor: const Color(0xFFdee2e6),
 
       // --------------------------
       // MOBILE APPBAR + DRAWER
@@ -2665,7 +2665,7 @@ class RestaurantDashboardScreen extends StatelessWidget {
                         constraints: const BoxConstraints(maxWidth: 1200),
                         child: SingleChildScrollView(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: pageHorizontalPadding, vertical: 18),
+                              horizontal: pageHorizontalPadding, vertical: 16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -2674,7 +2674,7 @@ class RestaurantDashboardScreen extends StatelessWidget {
                               Text(
                                 'Dashboard',
                                 style: TextStyle(
-                                  fontSize: isWeb ? 28 : 24,
+                                  fontSize: 26,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),

@@ -1554,7 +1554,7 @@ class _AddDealScreenState extends State<AddDealScreen> {
     final isMobile = !isWeb && !isTablet;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFDEDECC),
+      backgroundColor: const Color(0xFFdee2e6),
 
       // --------------------------
       // MOBILE APPBAR + DRAWER
@@ -1601,14 +1601,14 @@ class _AddDealScreenState extends State<AddDealScreen> {
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 1100),
                       child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // PAGE TITLE
                             const Text(
                               'Add Deal',
-                              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+                              style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700),
                             ),
                             const SizedBox(height: 20),
 

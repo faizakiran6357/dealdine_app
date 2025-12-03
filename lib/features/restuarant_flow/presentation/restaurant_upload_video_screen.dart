@@ -2898,7 +2898,7 @@ class _RestaurantUploadVideoScreenState
     final isMobile = !isWeb && !isTablet;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFDEDECC),
+      backgroundColor: const Color(0xFFdee2e6),
       appBar: isMobile ? const MobileAppBar() : null,
       drawer:
           isMobile ? Drawer(child: LeftSidebar(width: 220, showLabels: true)) : null,
@@ -2937,11 +2937,11 @@ class _RestaurantUploadVideoScreenState
                     ),
                     const SizedBox(height: 20),
                   const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
                       "Video Upload & Management",
                       style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 26,
                           fontWeight: FontWeight.w700,
                           color: Colors.black87),
                     ),

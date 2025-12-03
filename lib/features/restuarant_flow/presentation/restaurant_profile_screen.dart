@@ -2163,6 +2163,7 @@ import 'package:dealdine_application/widgets/left_sidebar.dart';
 import 'package:dealdine_application/widgets/mobile_appbar.dart';
 import 'package:dealdine_application/widgets/top_navbar.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 
 class RestaurantProfileScreen extends StatelessWidget {
@@ -2176,7 +2177,7 @@ class RestaurantProfileScreen extends StatelessWidget {
     final bool isMobile = !isWeb && !isTablet;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFDEDECC),
+      backgroundColor: const Color(0xFFdee2e6),
 
       // --------------------------
       // MOBILE APPBAR + DRAWER
@@ -2216,13 +2217,13 @@ class RestaurantProfileScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 1),
 
                             // PAGE TITLE
                             const Text(
                               "Restaurant Profile",
                               style: TextStyle(
-                                fontSize: 28,
+                                fontSize: 26,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black,
                               ),
@@ -2297,9 +2298,162 @@ class RestaurantProfileScreen extends StatelessWidget {
 }
 
 
-// ============================================================
-// ENHANCED SETTINGS SCREEN (MOBILE)
-// ============================================================
+// // ============================================================
+// // ENHANCED SETTINGS SCREEN (MOBILE)
+// // ============================================================
+// class SettingsScreen extends StatelessWidget {
+//   const SettingsScreen({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: const Color(0xFFF5F5F5),
+//       appBar: AppBar(
+//         title: const Text(
+//           "Settings",
+//           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+//         ),
+//         backgroundColor: Colors.white,
+//         elevation: 0,
+//         leading: IconButton(
+//           icon: const Icon(Icons.arrow_back, color: Colors.black),
+//           onPressed: () => Navigator.pop(context),
+//         ),
+//       ),
+//       body: SingleChildScrollView(
+//         padding: const EdgeInsets.all(20),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             // -------------------------
+//             // LANGUAGES CARD
+//             // -------------------------
+//             Container(
+//               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: BorderRadius.circular(16),
+//                 boxShadow: [
+//                   BoxShadow(
+//                     color: Colors.black.withOpacity(0.05),
+//                     blurRadius: 10,
+//                     offset: const Offset(0, 4),
+//                   ),
+//                 ],
+//               ),
+//               child: Row(
+//                 children: [
+//                   const Text(
+//                     "Languages",
+//                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+//                   ),
+//                   const Spacer(),
+//                   Image.asset('assets/Flag.png', width: 28, height: 28),
+//                   const SizedBox(width: 8),
+//                   Row(
+//                     children: const [
+//                       Text(
+//                         "English",
+//                         style:
+//                             TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+//                       ),
+//                       Icon(Icons.keyboard_arrow_down, size: 20),
+//                     ],
+//                   ),
+//                 ],
+//               ),
+//             ),
+
+//             const SizedBox(height: 24),
+
+//             // -------------------------
+//             // PROFILE INFO CARD
+//             // -------------------------
+//             Container(
+//               padding: const EdgeInsets.all(20),
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: BorderRadius.circular(16),
+//                 boxShadow: [
+//                   BoxShadow(
+//                     color: Colors.black.withOpacity(0.05),
+//                     blurRadius: 10,
+//                     offset: const Offset(0, 4),
+//                   ),
+//                 ],
+//               ),
+//               child: Row(
+//                 children: [
+//                   const CircleAvatar(
+//                     radius: 35,
+//                     backgroundImage: AssetImage('assets/profile3.png'),
+//                   ),
+//                   const SizedBox(width: 16),
+//                   Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: const [
+//                       Text(
+//                         "Moni Roy",
+//                         style: TextStyle(
+//                           fontSize: 18,
+//                           fontWeight: FontWeight.w600,
+//                         ),
+//                       ),
+//                       SizedBox(height: 4),
+//                       Text(
+//                         "Admin",
+//                         style: TextStyle(
+//                           fontSize: 14,
+//                           color: Color(0xFF6B7180),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ],
+//               ),
+//             ),
+
+//             const SizedBox(height: 24),
+
+//             // -------------------------
+//             // ADD MORE SETTINGS (OPTIONAL)
+//             // -------------------------
+//             Container(
+//               padding: const EdgeInsets.all(20),
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: BorderRadius.circular(16),
+//                 boxShadow: [
+//                   BoxShadow(
+//                     color: Colors.black.withOpacity(0.05),
+//                     blurRadius: 10,
+//                     offset: const Offset(0, 4),
+//                   ),
+//                 ],
+//               ),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: const [
+//                   Text(
+//                     "Account Settings",
+//                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+//                   ),
+//                   SizedBox(height: 12),
+//                   Text(
+//                     "Manage your account preferences and security settings.",
+//                     style: TextStyle(fontSize: 14, color: Color(0xFF6B7180)),
+//                   ),
+//                 ],
+//               ),
+//             ),
+
+//             const SizedBox(height: 24),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
@@ -2353,8 +2507,7 @@ class SettingsScreen extends StatelessWidget {
                     children: const [
                       Text(
                         "English",
-                        style:
-                            TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                       ),
                       Icon(Icons.keyboard_arrow_down, size: 20),
                     ],
@@ -2415,7 +2568,7 @@ class SettingsScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // -------------------------
-            // ADD MORE SETTINGS (OPTIONAL)
+            // ACCOUNT SETTINGS CARD
             // -------------------------
             Container(
               padding: const EdgeInsets.all(20),
@@ -2443,6 +2596,43 @@ class SettingsScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 14, color: Color(0xFF6B7180)),
                   ),
                 ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // -------------------------
+            // LOGOUT BUTTON
+            // -------------------------
+            GestureDetector(
+              onTap: () {
+                // Navigate to RoleSelectionScreen using GoRouter
+                context.go('/role');
+              },
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFF4B00),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: Text(
+                    "Logout",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
               ),
             ),
 

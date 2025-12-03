@@ -152,13 +152,38 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/notifications', builder: (c, s) => NotificationsScreen()),
 
     /// ===================================================================
-    /// ⭐ RESTAURANT FLOW ROUTES
+    /// ⭐ RESTAURANT FLOW ROUTES (NO TRANSITION FOR STICKY LAYOUT FEEL)
     /// ===================================================================
-    GoRoute(path: '/restaurant/dashboard', builder: (c, s) => const RestaurantDashboardScreen()),
-    GoRoute(path: '/restaurant/add-deal', builder: (c, s) => const AddDealScreen()),
-    GoRoute(path: '/restaurant/upload-video', builder: (c, s) => const RestaurantUploadVideoScreen()),
-    GoRoute(path: '/restaurant/analytics', builder: (c, s) => const RestaurantAnalyticsScreen()),
-    GoRoute(path: '/restaurant/profile', builder: (c, s) => const RestaurantProfileScreen()),
+    GoRoute(
+      path: '/restaurant/dashboard',
+      pageBuilder: (c, s) => const NoTransitionPage(
+        child: RestaurantDashboardScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/restaurant/add-deal',
+      pageBuilder: (c, s) => const NoTransitionPage(
+        child: AddDealScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/restaurant/upload-video',
+      pageBuilder: (c, s) => const NoTransitionPage(
+        child: RestaurantUploadVideoScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/restaurant/analytics',
+      pageBuilder: (c, s) => const NoTransitionPage(
+        child: RestaurantAnalyticsScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/restaurant/profile',
+      pageBuilder: (c, s) => const NoTransitionPage(
+        child: RestaurantProfileScreen(),
+      ),
+    ),
 
     /// ===================================================================
     /// ⭐ ADMIN FLOW ROUTES
