@@ -3,12 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dealdine_application/widgets/primary_button.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
+// Backend imports
+import '../data/repositories/auth_repository_impl.dart';
+import '../application/usecases/auth_usecase.dart';
+
+class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final emailC = TextEditingController();
+  bool isLoading = false;
+
+  @override
+  void dispose() {
+    emailC.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final emailC = TextEditingController();
+    final authRepo = AuthRepositoryImpl();
+    final authUseCase = AuthUseCase(authRepo);
 
     return Scaffold(
       backgroundColor: const Color(0xFF0D0D25),
@@ -45,9 +64,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 30),
-
                 Center(
                   child: Text(
                     "Forgot Password",
@@ -58,11 +75,10 @@ class ForgotPasswordScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 8),
                 Center(
                   child: Text(
-                    "Please sign in to your existing account",
+                    "Please enter your registered email",
                     style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 13,
@@ -98,35 +114,41 @@ class ForgotPasswordScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
 
-                  // Email Input Field (same style as signup)
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF2F4F7),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      controller: emailC,
-                      decoration: const InputDecoration(
-                        labelText: "example@gmail.com",
-                        labelStyle: TextStyle(
-                          color: Color(0xFF8D9399),
-                          fontSize: 14,
-                        ),
-                        floatingLabelBehavior: FloatingLabelBehavior.auto,
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                      ),
-                    ),
-                  ),
+                  /// ---------------- Email Input ----------------
+                  _inputBox(controller: emailC, hint: "example@gmail.com"),
 
                   const SizedBox(height: 30),
 
                   // **************** PRIMARY BUTTON *****************
                   PrimaryButton(
                     text: "SEND CODE",
-                    onTap: () {
-                      context.push('/verification');
+                    isLoading: isLoading,
+                    onTap: () async {
+                      if (emailC.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Please enter email")),
+                        );
+                        return;
+                      }
+
+                      setState(() => isLoading = true);
+
+                      try {
+                        await authUseCase.sendOtp(emailC.text);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("OTP sent successfully")),
+                        );
+
+                        context.push('/verification', extra: emailC.text);
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Error: $e")),
+                        );
+                      }
+
+                      setState(() => isLoading = false);
                     },
                   ),
                 ],
@@ -134,6 +156,29 @@ class ForgotPasswordScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// ---------------- Input Box Widget ----------------
+  Widget _inputBox({
+    required TextEditingController controller,
+    required String hint,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFF2F4F7),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TextField(
+        controller: controller, // preserves text
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: const TextStyle(color: Color(0xFF8D9399), fontSize: 14),
+          border: InputBorder.none,
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        ),
       ),
     );
   }

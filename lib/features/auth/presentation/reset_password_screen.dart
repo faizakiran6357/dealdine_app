@@ -1,41 +1,36 @@
 
-import 'package:dealdine_application/widgets/primary_button.dart';
+import 'package:dealdine_application/features/auth/application/usecases/auth_usecase.dart';
+import 'package:dealdine_application/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dealdine_application/widgets/primary_button.dart';
 
-// Backend repository and usecase imports
-import '../data/repositories/auth_repository_impl.dart';
-import '../application/usecases/auth_usecase.dart';
+class ResetPasswordScreen extends StatefulWidget {
+  final String email; // passed from VerificationScreen
 
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+  const ResetPasswordScreen({super.key, required this.email});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  final newPassC = TextEditingController();
+  final rePassC = TextEditingController();
   bool isLoading = false;
 
-  // ------------------ Controllers ------------------
-  final nameC = TextEditingController();
-  final emailC = TextEditingController();
-  final passC = TextEditingController();
-  final rePassC = TextEditingController();
+  late AuthUseCase authUseCase;
 
   @override
-  void dispose() {
-    nameC.dispose();
-    emailC.dispose();
-    passC.dispose();
-    rePassC.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+
+    /// 🔥 FIXED — initialize AuthUseCase here
+    authUseCase = AuthUseCase(AuthRepositoryImpl());
   }
 
   @override
   Widget build(BuildContext context) {
-    final authRepo = AuthRepositoryImpl();
-    final authUseCase = AuthUseCase(authRepo);
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -45,7 +40,7 @@ class _SignupScreenState extends State<SignupScreen> {
           children: [
             /// ---------------- TOP HEADER ----------------
             SizedBox(
-              height: size.height * 0.30,
+              height: size.height * 0.3,
               child: Stack(
                 children: [
                   Positioned(
@@ -60,8 +55,11 @@ class _SignupScreenState extends State<SignupScreen> {
                           shape: BoxShape.circle,
                           color: Colors.white,
                         ),
-                        child: const Icon(Icons.arrow_back_ios_new,
-                            size: 22, color: Color(0xFF5E616F)),
+                        child: const Icon(
+                          Icons.arrow_back_ios_new,
+                          size: 22,
+                          color: Color(0xFF5E616F),
+                        ),
                       ),
                     ),
                   ),
@@ -69,10 +67,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(top: 120),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         children: const [
                           Text(
-                            "Sign Up",
+                            "Reset Password",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 28,
@@ -81,7 +78,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                           SizedBox(height: 6),
                           Text(
-                            "Please sign up to get started",
+                            "Set your new password",
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 13,
@@ -109,67 +106,58 @@ class _SignupScreenState extends State<SignupScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // NAME FIELD
+                  /// NEW PASSWORD
                   const Text(
-                    "NAME",
+                    "NEW PASSWORD",
                     style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w600),
+                      fontSize: 12,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 8),
-                  _inputBox(controller: nameC, hint: "John doe"),
-
-                  const SizedBox(height: 18),
-
-                  // EMAIL FIELD
-                  const Text(
-                    "EMAIL",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w600),
+                  _inputBox(
+                    controller: newPassC,
+                    hint: "••••••••••••",
+                    isPass: true,
                   ),
-                  const SizedBox(height: 8),
-                  _inputBox(controller: emailC, hint: "example@gmail.com"),
-
                   const SizedBox(height: 18),
 
-                  // PASSWORD FIELD
-                  const Text(
-                    "PASSWORD",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 8),
-                  _inputBox(controller: passC, hint: "••••••••••••", isPass: true),
-
-                  const SizedBox(height: 18),
-
-                  // RE-TYPE PASSWORD FIELD
+                  /// RE-TYPE PASSWORD
                   const Text(
                     "RE-TYPE PASSWORD",
                     style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w600),
+                      fontSize: 12,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 8),
-                  _inputBox(controller: rePassC, hint: "••••••••••••", isPass: true),
-
+                  _inputBox(
+                    controller: rePassC,
+                    hint: "••••••••••••",
+                    isPass: true,
+                  ),
                   const SizedBox(height: 32),
 
-                  /// ---------------- PRIMARY BUTTON ----------------
+                  /// RESET PASSWORD BUTTON
                   PrimaryButton(
-                    text: "Sign Up",
+                    text: "RESET PASSWORD",
                     isLoading: isLoading,
                     onTap: () async {
-                      if (passC.text != rePassC.text) {
+                      final newPass = newPassC.text.trim();
+                      final rePass = rePassC.text.trim();
+
+                      if (newPass.isEmpty || rePass.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Passwords do not match")),
+                          const SnackBar(content: Text("Please fill all fields")),
+                        );
+                        return;
+                      }
+
+                      if (newPass != rePass) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Passwords do not match")),
                         );
                         return;
                       }
@@ -177,30 +165,25 @@ class _SignupScreenState extends State<SignupScreen> {
                       setState(() => isLoading = true);
 
                       try {
-                        // Call backend signup API
-                        final user = await authUseCase.signup(
-                          nameC.text,
-                          emailC.text,
-                          passC.text,
-                        );
+                        /// 🔥 Backend Call
+                        await authUseCase.resetPassword(widget.email, newPass);
 
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text("Signup successful: ${user.name}")),
+                          const SnackBar(
+                              content: Text("Password reset successfully")),
                         );
-                        context.go('/login'); // navigate to login
 
+                        /// Navigate to login
+                        context.push('/login');
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Signup failed: $e")),
+                          SnackBar(content: Text("Error: $e")),
                         );
                       }
 
                       setState(() => isLoading = false);
                     },
                   ),
-
-                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -210,7 +193,7 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  /// ---------------- Input Box Widget ----------------
+  /// ---------------- INPUT BOX UI ----------------
   Widget _inputBox({
     required TextEditingController controller,
     required String hint,
@@ -222,16 +205,19 @@ class _SignupScreenState extends State<SignupScreen> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextField(
-        controller: controller, // uses state controller to preserve text
+        controller: controller,
         obscureText: isPass,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: const TextStyle(color: Color(0xFFBAC1C6), fontSize: 14),
+          hintStyle: const TextStyle(
+            color: Color(0xFFBAC1C6),
+            fontSize: 14,
+          ),
           border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-          suffixIcon:
-              isPass ? const Icon(Icons.visibility_off, color: Colors.grey) : null,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 14,
+            horizontal: 16,
+          ),
         ),
       ),
     );

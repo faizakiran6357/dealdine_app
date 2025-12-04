@@ -3,14 +3,34 @@ import 'package:dealdine_application/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+// Backend repository and usecase imports
+import '../data/repositories/auth_repository_impl.dart';
+import '../application/usecases/auth_usecase.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  // ------------------ Controllers ------------------
+  final emailC = TextEditingController();
+  final passC = TextEditingController();
+  bool isLoading = false;
+
+  @override
+  void dispose() {
+    emailC.dispose();
+    passC.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final emailC = TextEditingController();
-    final passC = TextEditingController();
+    final authRepo = AuthRepositoryImpl();
+    final authUseCase = AuthUseCase(authRepo);
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -71,25 +91,8 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFF2F4F7),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      controller: emailC,
-                      decoration: const InputDecoration(
-                        hintText: "example@gmail.com",
-                        hintStyle: TextStyle(
-                          color: Color(0xFFBAC1C6),
-                          fontSize: 13,
-                        ),
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                      ),
-                    ),
-                  ),
+                  _inputBox(controller: emailC, hint: "example@gmail.com"),
+
                   const SizedBox(height: 20),
 
                   /// PASSWORD
@@ -102,28 +105,8 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFF2F4F7),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      controller: passC,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        hintText: "••••••••••••",
-                        hintStyle: TextStyle(
-                          color: Color(0xFFBAC1C6),
-                          fontSize: 14,
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 14,
-                          horizontal: 16,
-                        ),
-                      ),
-                    ),
-                  ),
+                  _inputBox(controller: passC, hint: "••••••••••••", isPass: true),
+
                   const SizedBox(height: 10),
 
                   /// REMEMBER + FORGOT
@@ -162,7 +145,30 @@ class LoginScreen extends StatelessWidget {
                   /// ---------- REUSABLE PRIMARY BUTTON ----------
                   PrimaryButton(
                     text: "LOG IN",
-                    onTap: () => context.go('/location'),
+                    isLoading: isLoading,
+                    onTap: () async {
+                      setState(() => isLoading = true);
+
+                      try {
+                        final user = await authUseCase.login(
+                          emailC.text,
+                          passC.text,
+                        );
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text("Login successful: ${user.email}")),
+                        );
+
+                        context.go('/location'); // navigate to location/home
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Login failed: $e")),
+                        );
+                      }
+
+                      setState(() => isLoading = false);
+                    },
                   ),
 
                   const SizedBox(height: 30),
@@ -206,6 +212,33 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// ---------------- Input Box Widget ----------------
+  Widget _inputBox({
+    required TextEditingController controller,
+    required String hint,
+    bool isPass = false,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFF2F4F7),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TextField(
+        controller: controller, // <-- preserves text on rebuild
+        obscureText: isPass,
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: const TextStyle(color: Color(0xFFBAC1C6), fontSize: 14),
+          border: InputBorder.none,
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+          suffixIcon:
+              isPass ? const Icon(Icons.visibility_off, color: Colors.grey) : null,
         ),
       ),
     );

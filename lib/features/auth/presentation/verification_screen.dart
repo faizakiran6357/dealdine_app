@@ -3,13 +3,41 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dealdine_application/widgets/primary_button.dart';
 
-class VerificationScreen extends StatelessWidget {
-  const VerificationScreen({super.key});
+// Your usecase + repository
+import 'package:dealdine_application/features/auth/application/usecases/auth_usecase.dart';
+import 'package:dealdine_application/features/auth/data/repositories/auth_repository_impl.dart';
+
+class VerificationScreen extends StatefulWidget {
+  final String email;
+
+  const VerificationScreen({super.key, required this.email});
+
+  @override
+  State<VerificationScreen> createState() => _VerificationScreenState();
+}
+
+class _VerificationScreenState extends State<VerificationScreen> {
+  final otpControllers = List.generate(4, (_) => TextEditingController());
+  bool isLoading = false;
+
+  late AuthUseCase authUseCase;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // ✅ Initialize UseCase Properly
+    authUseCase = AuthUseCase(
+      AuthRepositoryImpl(),
+    );
+  }
+
+  String getOtp() {
+    return otpControllers.map((c) => c.text).join();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final otpControllers = List.generate(4, (_) => TextEditingController());
-
     return Scaffold(
       backgroundColor: const Color(0xFF0D0D25),
       body: LayoutBuilder(
@@ -17,9 +45,7 @@ class VerificationScreen extends StatelessWidget {
           return SingleChildScrollView(
             reverse: true,
             child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: constraints.maxHeight,
-              ),
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: IntrinsicHeight(
                 child: Column(
                   children: [
@@ -54,9 +80,7 @@ class VerificationScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-
                           const SizedBox(height: 30),
-
                           const Center(
                             child: Text(
                               "Verification",
@@ -67,9 +91,7 @@ class VerificationScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-
                           const SizedBox(height: 8),
-
                           const Center(
                             child: Text(
                               "We have sent a code to your email",
@@ -80,13 +102,11 @@ class VerificationScreen extends StatelessWidget {
                               textAlign: TextAlign.center,
                             ),
                           ),
-
                           const SizedBox(height: 6),
-
-                          const Center(
+                          Center(
                             child: Text(
-                              "example@gmail.com",
-                              style: TextStyle(
+                              widget.email,
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -97,7 +117,7 @@ class VerificationScreen extends StatelessWidget {
                       ),
                     ),
 
-                    // -------------------- WHITE CARD FULL SCREEN --------------------
+                    // -------------------- WHITE CARD --------------------
                     Expanded(
                       child: Container(
                         width: double.infinity,
@@ -127,7 +147,6 @@ class VerificationScreen extends StatelessWidget {
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
-
                                 Row(
                                   children: const [
                                     Text(
@@ -151,7 +170,6 @@ class VerificationScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-
                             const SizedBox(height: 20),
 
                             // OTP BOXES
@@ -188,14 +206,49 @@ class VerificationScreen extends StatelessWidget {
                                 );
                               }),
                             ),
-
                             const SizedBox(height: 40),
 
-                            // *************** VERIFY BUTTON (PRIMARY BUTTON) ***************
+                            // *************** VERIFY BUTTON ***************
                             PrimaryButton(
                               text: "VERIFY",
-                              onTap: () {
-                                // context.push('/newpassword');
+                              isLoading: isLoading,
+                              onTap: () async {
+                                final otp = getOtp();
+                                if (otp.length < 4) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Enter complete OTP"),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                setState(() => isLoading = true);
+
+                                try {
+                                  // backend call
+                                  await authUseCase.verifyOtp(
+                                    widget.email,
+                                    otp,
+                                  );
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("OTP verified successfully"),
+                                    ),
+                                  );
+
+                                  context.push(
+                                    '/reset-password',
+                                    extra: widget.email,
+                                  );
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text("Error: $e")),
+                                  );
+                                }
+
+                                setState(() => isLoading = false);
                               },
                             ),
                           ],
