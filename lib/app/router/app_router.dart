@@ -1,4 +1,9 @@
 
+// import 'package:dealdine_application/features/restaurant_flow/presentation/restaurant_add_deal_screen.dart';
+// import 'package:dealdine_application/features/restaurant_flow/presentation/restaurant_analytics_screen.dart';
+// import 'package:dealdine_application/features/restaurant_flow/presentation/restaurant_dashboard_screen.dart';
+// import 'package:dealdine_application/features/restaurant_flow/presentation/restaurant_profile_screen.dart';
+// import 'package:dealdine_application/features/restaurant_flow/presentation/restaurant_upload_video_screen.dart';
 // import 'package:go_router/go_router.dart';
 
 // // SPLASH + ONBOARDING
@@ -29,13 +34,6 @@
 // // NOTIFICATIONS
 // import '../../features/notifications/presentation/notifications_screen.dart';
 
-// /// ⭐ RESTAURANT FLOW
-// import '../../features/restaurant_flow/presentation/restaurant_dashboard_screen.dart';
-// import '../../features/restaurant_flow/presentation/restaurant_add_deal_screen.dart';
-// import '../../features/restaurant_flow/presentation/restaurant_upload_video_screen.dart';
-// import '../../features/restaurant_flow/presentation/restaurant_analytics_screen.dart';
-// import '../../features/restaurant_flow/presentation/restaurant_profile_screen.dart';
-
 // /// ⭐ ADMIN FLOW
 // import '../../features/admin_flow/presentation/admin_dashboard_screen.dart';
 // import '../../features/admin_flow/presentation/admin_approvals_screen.dart';
@@ -47,7 +45,7 @@
 // /// 🔥 FINAL GLOBAL ROUTER
 // /// =====================================================================
 // final GoRouter appRouter = GoRouter(
-//   initialLocation: '/',  // Splash screen first
+//   initialLocation: '/', // Splash first
 //   routes: [
 
 //     /// -------------------------------------------------------------------
@@ -59,7 +57,7 @@
 //     /// ONBOARDING
 //     GoRoute(path: '/onboarding', builder: (c, s) => const OnboardingMain()),
 
-//     /// ROLE SELECTION (Added)
+//     /// ROLE SELECTION
 //     GoRoute(path: '/role', builder: (c, s) => const RoleSelectionScreen()),
 
 //     /// -------------------------------------------------------------------
@@ -87,16 +85,31 @@
 //     GoRoute(path: '/notifications', builder: (c, s) => NotificationsScreen()),
 
 //     /// ===================================================================
-//     /// ⭐ RESTAURANT FLOW ROUTES
+//     /// ⭐ RESTAURANT FLOW — NO TRANSITION FOR SMOOTH UX
 //     /// ===================================================================
-//     GoRoute(path: '/restaurant/dashboard', builder: (c, s) => const RestaurantDashboardScreen()),
-//     GoRoute(path: '/restaurant/add-deal', builder: (c, s) => const RestaurantAddDealScreen()),
-//     GoRoute(path: '/restaurant/upload-video', builder: (c, s) => const RestaurantUploadVideoScreen()),
-//     GoRoute(path: '/restaurant/analytics', builder: (c, s) => const RestaurantAnalyticsScreen()),
-//     GoRoute(path: '/restaurant/profile', builder: (c, s) => const RestaurantProfileScreen()),
+//     GoRoute(
+//       path: '/restaurant/dashboard',
+//       pageBuilder: (c, s) => const NoTransitionPage(child: RestaurantDashboardScreen()),
+//     ),
+//     GoRoute(
+//       path: '/restaurant/add-deal',
+//       pageBuilder: (c, s) => const NoTransitionPage(child: AddDealScreen()),
+//     ),
+//     GoRoute(
+//       path: '/restaurant/upload-video',
+//       pageBuilder: (c, s) => const NoTransitionPage(child: RestaurantUploadVideoScreen()),
+//     ),
+//     GoRoute(
+//       path: '/restaurant/analytics',
+//       pageBuilder: (c, s) => const NoTransitionPage(child: RestaurantAnalyticsScreen()),
+//     ),
+//     GoRoute(
+//       path: '/restaurant/profile',
+//       pageBuilder: (c, s) => const NoTransitionPage(child: RestaurantProfileScreen()),
+//     ),
 
 //     /// ===================================================================
-//     /// ⭐ ADMIN FLOW ROUTES WITH PERSISTENT CHROME
+//     /// ⭐ ADMIN FLOW — WITH AdminShell WRAPPER
 //     /// ===================================================================
 //     ShellRoute(
 //       builder: (context, state, child) => AdminShell(child: child),
@@ -125,7 +138,6 @@
 //     ),
 //   ],
 // );
-
 import 'package:dealdine_application/features/restaurant_flow/presentation/restaurant_add_deal_screen.dart';
 import 'package:dealdine_application/features/restaurant_flow/presentation/restaurant_analytics_screen.dart';
 import 'package:dealdine_application/features/restaurant_flow/presentation/restaurant_dashboard_screen.dart';
@@ -146,6 +158,7 @@ import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/forgot_password_screen.dart';
 import '../../features/auth/presentation/verification_screen.dart';
 import '../../features/auth/presentation/signup_screen.dart';
+import '../../features/auth/presentation/reset_password_screen.dart'; // NEW
 
 // LOCATION
 import '../../features/location/presentation/location_screen.dart';
@@ -191,9 +204,33 @@ final GoRouter appRouter = GoRouter(
     /// AUTH
     /// -------------------------------------------------------------------
     GoRoute(path: '/login', builder: (c, s) => const LoginScreen()),
-    GoRoute(path: '/forgot', builder: (c, s) => const ForgotPasswordScreen()),
-    GoRoute(path: '/verification', builder: (c, s) => const VerificationScreen()),
     GoRoute(path: '/signup', builder: (c, s) => const SignupScreen()),
+
+    /// FORGOT PASSWORD
+    GoRoute(
+      path: '/forgot',
+      builder: (c, s) {
+        return const ForgotPasswordScreen();
+      },
+    ),
+
+    /// VERIFICATION SCREEN (pass email)
+    GoRoute(
+      path: '/verification',
+      builder: (c, s) {
+        final email = s.extra as String; // <-- get email from previous screen
+        return VerificationScreen(email: email);
+      },
+    ),
+
+    /// RESET PASSWORD SCREEN (pass email)
+    GoRoute(
+      path: '/reset-password',
+      builder: (c, s) {
+        final email = s.extra as String;
+        return ResetPasswordScreen(email: email);
+      },
+    ),
 
     /// LOCATION
     GoRoute(path: '/location', builder: (c, s) => const LocationScreen()),
